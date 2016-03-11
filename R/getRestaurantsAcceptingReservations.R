@@ -27,7 +27,7 @@ getRestaurantsAcceptingReservations<-function(city){
     df2 = data.frame(name=df1$data.name,longitude=as.double(df1$data.longitude),latitude=as.double(df1$data.latitude))
     df2
   }  else{
-    cat("No results with wheelchair accesibility")
+    cat("No restaurants available that accept reservations")
   }
   
 }
