@@ -1,5 +1,8 @@
-getCuisineforCity<-function(cuisine, City){
-
+getCuisineforCity<-function(cuisine, city){
+  
+  cuisine = gsub(" ","+",cuisine)
+  city = gsub(" ","+",city)
+  
   library(jsonlite)
   factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
   
@@ -7,26 +10,23 @@ getCuisineforCity<-function(cuisine, City){
 
   USfilter="{\"country\":\"US\"}"
   
-  # {"locality":{"$eq":"NEW+YORK"}}
-  cityFilter = paste0("{\"locality\":{\"$eq\":\"",City,"\"}}")
+  cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
   cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
-
   
-    allFilters=paste(USfilter,cityFilter,cuisineFilter,sep = ",")
+  allFilters=paste(USfilter,cityFilter,cuisineFilter,sep = ",")
   
   filters=paste0("{\"$and\":[",allFilters,"]}")
 
   limit=20
   offset=0
   URL=paste0(baseURL,"&filters=",filters,"&limit=",limit,"&offset=",offset,"&KEY=",factualAPIKey)
-  cat(URL)
+
+  getData=fromJSON(URL, flatten = TRUE)
+  df1 = as.data.frame(getData$response)
+     
+  df2 = cbind(name=df1$data.name,longitude=df1$data.longitude,latitude=df1$data.latitude)
+  df2 = as.data.frame(df2)
   
-  
-  
- getData=fromJSON(URL, flatten = TRUE)
- df1 = as.data.frame(getData$response)
-   
- df2 = cbind(df1$data.name,df1$data.longitude,df1$data.latitude)
 }
 
 
