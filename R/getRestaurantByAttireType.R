@@ -9,6 +9,9 @@ getRestaurantByAttireType<-function(city, attireType){
   
   if(!isAttireTypeSupported){
     cat(paste(attireType,"is not a supported attire type \n"))
+    cat(paste("Attire should be one of these:\n"))
+    cat(paste(supportedPriceRanges,"\n"))
+    
     return()
   }
   
