@@ -47,7 +47,7 @@ getRestaurantByDietType<-function(city, dietType, cuisine, full = FALSE){
   offset=0
 
   URL = paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
-  getData=jsonlite::fromJSON(URL, flatten = TRUE)
+  getData <- jsonlite::fromJSON(URL, flatten = TRUE)
   fullFactualResponse = as.data.frame(getData$response)
 
   #Make names more easily understandable by dropping "data." that factual attaches

@@ -24,7 +24,7 @@ getRestaurantsNearLocation<-function(pointName, category){
   offset=0
   URL=paste0(locURL,"&filters=",filters,"&limit=",limit,"&offset=",offset,"&KEY=",factualAPIKey)
 
-# #   getData=fromJSON(URL, flatten = TRUE)
+# #    getData <- jsonlite::fromJSON(URL, flatten = TRUE)
 #   df1 = as.data.frame(getData$response)
 #
 #   df2 = cbind(name=df1$data.name,longitude=df1$data.longitude,latitude=df1$data.latitude)

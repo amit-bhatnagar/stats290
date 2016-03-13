@@ -56,7 +56,7 @@ getRestaurantsWithDeliveryOrTakeOut<-function(city, orderType, cuisine, full = F
 
   URL = paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
 
-  getData=fromJSON(URL, flatten = TRUE)
+  getData <- jsonlite::fromJSON(URL, flatten = TRUE)
 
   if(length(getData$response$data)!=0){
 

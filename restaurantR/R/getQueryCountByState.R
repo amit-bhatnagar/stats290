@@ -12,7 +12,7 @@ getQueryCountByUSState<-function(query){
   baseURL <- "http://api.v3.factual.com/t/places/facets?select=region&filters={\"country\":\"US\"}&limit=60"
   URL=paste0(baseURL,"&q=",queryURLEncoded,"&KEY=",factualAPIKey)
 
-  getData=jsonlite::fromJSON(URL, flatten = TRUE)
+  getData <- jsonlite::fromJSON(URL, flatten = TRUE)
   dataByRegion = as.data.frame(getData$response$data$region)
 
   #Capitalizing State name abbreviations

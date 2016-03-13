@@ -34,7 +34,7 @@ getSmokingFriendlyRestaurants<-function(city, cuisine, full = FALSE){
   offset=0
 
   URL = paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
-  getData=jsonlite::fromJSON(URL, flatten = TRUE)
+  getData <- jsonlite::fromJSON(URL, flatten = TRUE)
   if(length(getData$response$data)!=0){
 
   fullFactualResponse = as.data.frame(getData$response)
