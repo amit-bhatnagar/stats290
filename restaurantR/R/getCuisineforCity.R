@@ -6,37 +6,30 @@
 #' @import jsonlite
 #' @export
 #' @examples
-#' getRestaurantsAcceptingReservations("San Francisco","Asian")
+#' getCuisineforCity("San Francisco","Asian")
 
+getCuisineforCity<-function(city, cuisine, full = FALSE){
 
-getRestaurantsAcceptingReservations<-function(city, cuisine, full = FALSE){
-
-  if(missing(cuisine)){
-    cuisine = ""
-  }
+  cuisine = gsub(" ","+",cuisine)
   city = gsub(" ","+",city)
 
-  # factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
-    factualAPIKey = "Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn"
+  factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
 
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
 
   USfilter="{\"country\":\"US\"}"
 
   cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
-  reservationFilter = "{\"reservations\":{\"$eq\":\"TRUE\"}}"
-
-
   cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
 
-  allFilters=paste(cityFilter,reservationFilter,cuisineFilter,sep = ",")
+  allFilters=paste(USfilter,cityFilter,cuisineFilter,sep = ",")
 
   filters=paste0("{\"$and\":[",allFilters,"]}")
 
   limit=20
   offset=0
+  URL=paste0(baseURL,"&filters=",filters,"&limit=",limit,"&offset=",offset,"&KEY=",factualAPIKey)
 
-  URL = paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
   getData=fromJSON(URL, flatten = TRUE)
 
   if(length(getData$response$data)!=0){
@@ -57,6 +50,9 @@ getRestaurantsAcceptingReservations<-function(city, cuisine, full = FALSE){
 
   }
   else{
-    warning("No restaurants with selected cuisine that accept reservations in this location")
+    warning("No restaurants with selected cuisine in this location")
   }
 }
+
+
+
