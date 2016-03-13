@@ -18,12 +18,12 @@ plotChainComparisonByState<-function(query1, query2){
   
   
   finalData <- merge(chainDataWithLatLong, us_state_map, by = 'region')
-  p1 <- ggplot(data = finalData, aes(x = long, y = lat, group = group))
-  p1 <- p1 + geom_polygon(aes(fill = color), show.legend = FALSE)
-  p1 <- p1 + geom_path(colour = 'goldenrod1', linemitre  = 2)
-  p1 <- p1 + coord_map()
-  p1 <- p1 + geom_text(data = chainDataWithLatLong, aes(x = longitude, y = latitude, label = Winner, group=NULL, fontface = "bold"))
-  p1 <- p1 + theme_bw()
-  p1
+  displayMap <- ggplot(data = finalData, aes(x = long, y = lat, group = group))
+  displayMap <- displayMap + geom_polygon(aes(fill = color), show.legend = FALSE)
+  displayMap <- displayMap + geom_path(colour = 'goldenrod1', linemitre  = 2)
+  displayMap <- displayMap + coord_map()
+  displayMap <- displayMap + geom_text(data = chainDataWithLatLong, aes(x = longitude, y = latitude, label = Winner, group=NULL, fontface = "bold"))
+  displayMap <- displayMap + theme_bw()
+  displayMap
 }
 

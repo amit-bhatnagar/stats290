@@ -8,14 +8,16 @@ getRestaurantByDietType<-function(city, dietType){
   
   if(!isDietTypeSupported){
     cat(paste(dietType,"is not a supported diet type \n"))
-    return()
+    cat(paste("Diet type should be one of these:\n"))
+    cat(paste(supportedDietTypes,"\n"))
+    
+    return(FALSE)
   }
 
-    dietType =paste0("options_",dietType)
+  dietType =paste0("options_",dietType)
   
   library(jsonlite)
   factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
-  
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
   
   USfilter="{\"country\":\"US\"}"

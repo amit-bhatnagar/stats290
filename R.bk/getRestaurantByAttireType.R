@@ -8,11 +8,10 @@ getRestaurantByAttireType<-function(city, attireType){
   isAttireTypeSupported = any(supportedAttireTypes == attireType )
   
   if(!isAttireTypeSupported){
-    cat(paste(attireType,"is not a supported attire type \n"))
-    cat(paste("Attire should be one of these:\n"))
-    cat(paste(supportedPriceRanges,"\n"))
-    
-    return()
+    warning(paste(attireType,"is not a supported attire type \n"))
+    message(paste("Attire should be one of these:"))
+    message(paste(supportedAttireTypes,"\n"))
+    return(NA)
   }
   
   attireType = gsub(" ","+",attireType)
@@ -44,6 +43,6 @@ getRestaurantByAttireType<-function(city, attireType){
   df2 = data.frame(name=df1$data.name,longitude=as.double(df1$data.longitude),latitude=as.double(df1$data.latitude))
   df2
   }  else{
-  cat("No results with the requested attire type")
+  warning("No results with the requested attire type")
   }
 }

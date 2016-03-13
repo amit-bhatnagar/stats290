@@ -1,4 +1,4 @@
-getKidsFriendlyRestaurants<-function(city){
+getKidsFriendlyRestaurants<-function(city, cuisine, full = FALSE ){
   
   city = gsub(" ","+",city)
   
@@ -25,5 +25,10 @@ getKidsFriendlyRestaurants<-function(city){
   df1 = as.data.frame(getData$response)
   
   df2 = data.frame(name=df1$data.name,longitude=as.double(df1$data.longitude),latitude=as.double(df1$data.latitude))
+  
+  if(full)
+    df1
+  else 
+    df2
   
 }

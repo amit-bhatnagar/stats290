@@ -9,7 +9,7 @@ getCountbyUSState<-function(query){
   getData=fromJSON(URL, flatten = TRUE)
   
   dataByRegion = as.data.frame(getData$response$data$region)
-
+  dataByRegion
 }
 
 
