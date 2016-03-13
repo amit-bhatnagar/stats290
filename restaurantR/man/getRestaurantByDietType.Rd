@@ -4,7 +4,7 @@
 \alias{getRestaurantByDietType}
 \title{Given a city name, a cusisine type and a diet type, provide a list of restaurants that meet these conditions}
 \usage{
-getRestaurantByDietType(city, dietType, cuisine, full)
+getRestaurantByDietType(city, dietType, cuisine, full = FALSE)
 }
 \arguments{
 \item{city}{A city name}
@@ -20,6 +20,6 @@ which results in a smaller data frame with just restaurant name, latitude and lo
 Given a city name, a cusisine type and a diet type, provide a list of restaurants that meet these conditions
 }
 \examples{
-getKidsFriendlyRestaurants("New York","Thai")
+getRestaurantByDietType("Bellevue","Vegetarian","Thai")
 }
 

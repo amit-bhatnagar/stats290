@@ -1,45 +1,48 @@
-#' Given a city name, a cusisine type and a diet type, provide a list of restaurants that meet these conditions
+#' Given a city name, a cusisine type and a meal type, provide a list of restaurants that meet these conditions
 #' @param city A city name
-#' @param dietType One of diet types: "vegan","vegetarian","gluttenfree","organic","healthy"
+#' @param mealType One of these: "lunch","dinner","breakfast"
 #' @param cuisine Cuisine name like "Indian", "Thai" etc.
 #' @param full if TRUE returns full factual response. Default is FALSE,
 #'        which results in a smaller data frame with just restaurant name, latitude and longitude
 #' @import jsonlite
 #' @export
 #' @examples
-#' getRestaurantByDietType("Bellevue","Vegetarian","Thai")
+#' getRestaurantsByMealType("Bellevue","Lunch","Thai")
 
-getRestaurantByDietType<-function(city, dietType, cuisine, full = FALSE){
-
+getRestaurantsByMealType<-function(city, mealType, cuisine, full = FALSE){
   if(missing(cuisine)){
     cuisine = ""
   }
   city = gsub(" ","+",city)
-  dietType = tolower(dietType)
-  supportedDietTypes =c("vegan","vegetarian","gluttenfree","organic","healthy")
-
-  isDietTypeSupported = any(supportedDietTypes == dietType )
-
-  if(!isDietTypeSupported){
-    cat(paste(dietType,"is not a supported diet type \n"))
-    cat(paste("Diet type should be one of these:\n"))
-    cat(paste(supportedDietTypes,"\n"))
-
-    return(FALSE)
-  }
-
-  dietType =paste0("options_",dietType)
 
   factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
+
+  mealType = tolower(mealType)
+  supportedMealTypes =c("lunch","dinner","breakfast")
+
+  isMealTypeSupported = any(supportedMealTypes == mealType )
+
+  if(!isMealTypeSupported){
+    cat(paste(mealType,"is not a supported meal type \n"))
+    cat(paste("Meal should be one of these:\n"))
+    cat(paste(supportedMealTypes,"\n"))
+
+    return()
+  }
+
+  mealType=paste0("meal_",mealType)
+
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
 
   USfilter="{\"country\":\"US\"}"
 
   cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
-  dietFilter = paste0("{\"",dietType,"\":{\"$eq\":\"TRUE\"}}")
+
+  mealTypeFilter = paste0("{\"",mealType,"\":{\"$eq\":\"TRUE\"}}")
+
 
   cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
-  allFilters=paste(cityFilter,dietFilter,cuisineFilter,sep = ",")
+  allFilters=paste(cityFilter,mealTypeFilter,cuisineFilter,sep = ",")
 
   filters=paste0("{\"$and\":[",allFilters,"]}")
 
@@ -48,6 +51,7 @@ getRestaurantByDietType<-function(city, dietType, cuisine, full = FALSE){
 
   URL = paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
   getData=jsonlite::fromJSON(URL, flatten = TRUE)
+
   fullFactualResponse = as.data.frame(getData$response)
 
   #Make names more easily understandable by dropping "data." that factual attaches
