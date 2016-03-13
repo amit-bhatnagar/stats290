@@ -1,4 +1,4 @@
-#' Given a city name and a cusisine type, provide a list of restaurants that are considered good for kids
+#'  Given a city name and a cusisine type, provide a list of restaurants that serve alcohol
 #' @param city A city name
 #' @param cuisine Cuisine name like "Indian", "Thai" etc.
 #' @param full if TRUE returns full factual response. Default is FALSE,
@@ -6,9 +6,10 @@
 #' @import jsonlite
 #' @export
 #' @examples
-#' getKidsFriendlyRestaurants("New York","Thai")
+#' getAlcoholFriendlyRestaurants("Mountain View","Indian")
 
-getKidsFriendlyRestaurants<-function(city, cuisine, full = FALSE ){
+
+getAlcoholFriendlyRestaurants<-function(city, cuisine, full = FALSE){
 
   if(missing(cuisine)){
     cuisine = ""
@@ -16,15 +17,16 @@ getKidsFriendlyRestaurants<-function(city, cuisine, full = FALSE ){
   city = gsub(" ","+",city)
 
   factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
+
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
 
   USfilter="{\"country\":\"US\"}"
-
   cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
-  kidsFilter = "{\"kids_goodfor\":{\"$eq\":\"TRUE\"}}"
+  alcoholFilter = "{\"alcohol\":{\"$eq\":\"TRUE\"}}"
+
   cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
 
-  allFilters=paste(cityFilter,kidsFilter,cuisineFilter,sep = ",")
+  allFilters=paste(cityFilter,alcoholFilter,cuisineFilter,sep = ",")
 
   filters=paste0("{\"$and\":[",allFilters,"]}")
 
