@@ -1,6 +1,6 @@
 #' Gets count of restaurant results matching a query by US state
 #' @param query a restaurant-related query like "Subway" or "Indian"
-#' @import jsonlite, plyr
+#' @import jsonlite plyr
 #' @export
 #' @examples
 #' getQueryCountByUSState("Chipotle")

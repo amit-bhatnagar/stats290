@@ -2,7 +2,7 @@
 #' @param query1 First restaurant-related query
 #' @param query2 First restaurant-related query
 #' @export
-#' @import ggmap
+#' @import ggmap curl
 #' @examples
 #' plotQueryComparisonByState("Pizza Hut","Dominoe's")
 #' plotQueryComparisonByState("Dosa","Naan")

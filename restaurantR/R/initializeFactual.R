@@ -7,6 +7,7 @@
 #' initializeFactual("mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo")
 
 initializeFactual <- function(key){
+  factualAPIKey = ""
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
   URL = paste0(baseURL,"&KEY=",key)
 

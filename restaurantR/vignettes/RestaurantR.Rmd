@@ -39,9 +39,8 @@ dw
 ```{r, fig.show='hold'}
 rm(list=ls())
 library(restaurantR)
-#library(ggplot2)
-#library(ggmap)
-plotBusinesses("New York",NYC_Vegan)
+getAlcoholFriendlyRestaurants("Mountain View","Indian")
+
 ```
 
 You can enable figure captions by `fig_caption: yes` in YAML:
@@ -54,13 +53,6 @@ Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr*
 
 ## More Examples
 
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
 
 > "He who gives up [code] safety for [code] speed deserves neither."
 ([via](https://twitter.com/hadleywickham/status/504368538874703872))

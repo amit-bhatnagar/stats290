@@ -13,10 +13,11 @@ Depends: R(>= 2.10.0)
 LazyData: TRUE
 Encoding: UTF-8
 Imports:
-    plyr,
     ggplot2,
     ggmap,
-    jsonlite
+    curl,
+    jsonlite,
+    plyr
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown

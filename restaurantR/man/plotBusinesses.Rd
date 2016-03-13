@@ -15,6 +15,6 @@ plotBusinesses(city, businessDF)
 Plot business on a map from a city name and a date-frame of business name, longitude and latitude
 }
 \examples{
-plotBusinesses("New York",NYC_Vegan)
+plotBusinesses("Mountain View",MountainView_Indian_Alcohol_Friendly)
 }
 
