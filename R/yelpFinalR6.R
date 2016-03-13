@@ -67,7 +67,7 @@ YelpRestaurantData <- R6Class("YelpRestaurantData",
                      #}
                      private$data <- data
                    },
-                   GetYelpData = function()
+                   GetYelpData = function(city = "redmond", state = "WA", cusine = "Thai")
                    {
                      dflist <- list()
                      result.df = as.data.frame(matrix(ncol=26, nrow=200),dup.row.names=TRUE)
@@ -75,7 +75,7 @@ YelpRestaurantData <- R6Class("YelpRestaurantData",
                      {
                        limit <- 20
                        offset = i*limit
-                       yelpurl <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=Chicago%20IL&term=bar")
+                       yelpurl <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=",city,"%20",state,"&term=",cusine)
                        locationdata=GET(yelpurl, sig)
                        locationdataContent = content(locationdata)
                        locationdataList=jsonlite::fromJSON(toJSON(locationdataContent))
@@ -106,5 +106,5 @@ YelpRestaurantData <- R6Class("YelpRestaurantData",
 YelpObj <- YelpRestaurantData$new()
 YelpObj
 YelpObj$InitializeYelp()
-dflist = YelpObj$GetYelpData()
+dflist = YelpObj$GetYelpData("Bellevue","WA","Chinese")
 dflist = YelpObj$GetYelpData()
