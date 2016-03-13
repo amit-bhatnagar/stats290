@@ -6,8 +6,7 @@
 #' @examples
 #' plotBusinesses("New York",NYC_Vegan)
 
-#library(ggplot2)
-#library(ggmap)
+
 plotBusinesses <-function(city, businessDF){
   # library(ggmap)
   longitude = latitude = NULL

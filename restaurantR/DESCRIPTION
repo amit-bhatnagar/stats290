@@ -16,9 +16,7 @@ Imports:
     plyr,
     ggplot2,
     ggmap,
-    httr,
-    jsonlite,
-    R6
+    jsonlite
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
