@@ -13,6 +13,6 @@ plotRestaurantsNearLocation(pointName)
 Given a point ofinterest, provide a list of nearby restaurants
 }
 \examples{
-plotRestaurantsNearLocation("Space Needle","Asian")
+plotRestaurantsNearLocation("Space Needle")
 }
 

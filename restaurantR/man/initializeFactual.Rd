@@ -15,6 +15,6 @@ Initialize factual and set factualAPIKey as a global variable
 where it can be accessed by other functions
 }
 \examples{
-initializeFactual("mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo")
+initializeFactual("Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn")#mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo
 }
 

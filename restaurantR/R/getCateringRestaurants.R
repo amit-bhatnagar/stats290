@@ -10,52 +10,63 @@
 
 
 getCateringRestaurants<-function(city, cuisine, full = FALSE){
-
+  limit=20
+  offset=0
+  factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
+  baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
   if(missing(cuisine)){
     cuisine = ""
   }
 
-  city = gsub(" ","+",city)
+  out <- tryCatch(
+    {
+      city = gsub(" ","+",city)
 
-  factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
 
-  baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
+      USfilter="{\"country\":\"US\"}"
 
-  USfilter="{\"country\":\"US\"}"
+      cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
+      cateringFilter = "{\"meal_cater\":{\"$eq\":\"TRUE\"}}"
 
-  cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
-  cateringFilter = "{\"meal_cater\":{\"$eq\":\"TRUE\"}}"
+      cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
 
-  cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
+      allFilters=paste(cityFilter,cateringFilter,cuisineFilter,sep = ",")
 
-  allFilters=paste(cityFilter,cateringFilter,cuisineFilter,sep = ",")
+      filters=paste0("{\"$and\":[",allFilters,"]}")
 
-  filters=paste0("{\"$and\":[",allFilters,"]}")
+      URL = paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
+      getData <- jsonlite::fromJSON(URL, flatten = TRUE)
 
-  limit=20
-  offset=0
+      if(length(getData$response$data)!=0){
+        fullFactualResponse = as.data.frame(getData$response)
 
-  URL = paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
-  getData <- jsonlite::fromJSON(URL, flatten = TRUE)
+        #Make names more easily understandable by dropping "data." that factual attaches
+        names(fullFactualResponse) <- sub("data.", "\\2", names(fullFactualResponse))
 
-  if(length(getData$response$data)!=0){
-    fullFactualResponse = as.data.frame(getData$response)
+        nameLatLong = data.frame(name=fullFactualResponse$name
+                                 ,longitude=as.double(fullFactualResponse$longitude)
+                                 ,latitude=as.double(fullFactualResponse$latitude))
 
-    #Make names more easily understandable by dropping "data." that factual attaches
-    names(fullFactualResponse) <- sub("data.", "\\2", names(fullFactualResponse))
+        if(full)
+          return(fullFactualResponse)
+        else
+          return(nameLatLong)
 
-    nameLatLong = data.frame(name=fullFactualResponse$name
-                             ,longitude=as.double(fullFactualResponse$longitude)
-                             ,latitude=as.double(fullFactualResponse$latitude))
-
-    if(full)
-      fullFactualResponse
-    else
-      nameLatLong
-
-  }
-  else{
-    warning("No restaurants that provide catering with selected cuisine in this location")
-  }
-
+      }
+      else{
+        warning("No restaurants that provide catering with selected cuisine in this location")
+      }
+    },
+    error=function(cond) {
+      message(cond)
+      # Choose a return value in case of error
+      return(NA)
+    },
+    warning=function(cond) {
+      message(cond)
+      # Choose a return value in case of warning
+      return(NULL)
+    }
+  )#tryCatch
+  return(out)
 }

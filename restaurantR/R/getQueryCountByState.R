@@ -6,41 +6,56 @@
 #' getQueryCountByUSState("Chipotle")
 
 getQueryCountByUSState<-function(query){
-  queryURLEncoded = URLencode(query)
   factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
-
   baseURL <- "http://api.v3.factual.com/t/places/facets?select=region&filters={\"country\":\"US\"}&limit=60"
-  URL=paste0(baseURL,"&q=",queryURLEncoded,"&KEY=",factualAPIKey)
 
-  getData <- jsonlite::fromJSON(URL, flatten = TRUE)
-  dataByRegion = as.data.frame(getData$response$data$region)
+  out <- tryCatch(
+    {
+      queryURLEncoded = URLencode(query)
 
-  #Capitalizing State name abbreviations
-  names(dataByRegion) = toupper(names(dataByRegion))
+      URL=paste0(baseURL,"&q=",queryURLEncoded,"&KEY=",factualAPIKey)
 
-  #Factual names Indiana as "IN.". Renaming this to "IN" for consistency
-  colnames(dataByRegion)[which(names(dataByRegion)=="IN.")] = "IN"
+      getData <- jsonlite::fromJSON(URL, flatten = TRUE)
+      dataByRegion = as.data.frame(getData$response$data$region)
 
-  #Drop DC as it does not appear in the list of 50 states in R
-  dataByRegion=dataByRegion[names(dataByRegion) != "DC" ]
+      #Capitalizing State name abbreviations
+      names(dataByRegion) = toupper(names(dataByRegion))
 
-  #Not all states may be present in the code,
-  #following code gets full list of US states filling 0 for the ones missing in original code
+      #Factual names Indiana as "IN.". Renaming this to "IN" for consistency
+      colnames(dataByRegion)[which(names(dataByRegion)=="IN.")] = "IN"
 
-  tempDF = data.frame(t((tempVal=rep(0,50))))
-  names(tempDF)=state.abb
+      #Drop DC as it does not appear in the list of 50 states in R
+      dataByRegion=dataByRegion[names(dataByRegion) != "DC" ]
 
+      #Not all states may be present in the code,
+      #following code gets full list of US states filling 0 for the ones missing in original code
 
-  dataByRegion <- plyr::rbind.fill(dataByRegion,tempDF)
-  dataByRegion=dataByRegion[,order(names(dataByRegion))]
+      tempDF = data.frame(t((tempVal=rep(0,50))))
+      names(tempDF)=state.abb
 
-  #Replace NA by 0
-  dataByRegion[is.na(dataByRegion)] <- 0
+      dataByRegion <- plyr::rbind.fill(dataByRegion,tempDF)
+      dataByRegion=dataByRegion[,order(names(dataByRegion))]
 
-  dataByRegion=t(dataByRegion[1,])
+      #Replace NA by 0
+      dataByRegion[is.na(dataByRegion)] <- 0
 
-  colnames(dataByRegion) = paste0("Count of restaurants matching \"",query,"\" by state")
-  dataByRegion
+      dataByRegion=t(dataByRegion[1,])
+
+      colnames(dataByRegion) = paste0("Count of restaurants matching \"",query,"\" by state")
+      return(dataByRegion)
+    },
+    error=function(cond) {
+      message(cond)
+      # Choose a return value in case of error
+      return(NA)
+    },
+    warning=function(cond) {
+      message(cond)
+      # Choose a return value in case of warning
+      return(NULL)
+    }
+  )#tryCatch
+  return(out)
 }
 
 

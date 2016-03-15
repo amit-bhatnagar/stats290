@@ -10,48 +10,61 @@
 
 getCuisineforCity<-function(city, cuisine, full = FALSE){
 
-  cuisine = gsub(" ","+",cuisine)
-  city = gsub(" ","+",city)
-
-  factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
-
-  baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
-
-  USfilter="{\"country\":\"US\"}"
-
-  cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
-  cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
-
-  allFilters=paste(USfilter,cityFilter,cuisineFilter,sep = ",")
-
-  filters=paste0("{\"$and\":[",allFilters,"]}")
-
   limit=20
   offset=0
-  URL=paste0(baseURL,"&filters=",filters,"&limit=",limit,"&offset=",offset,"&KEY=",factualAPIKey)
+  factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
+  baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
 
-  getData <- jsonlite::fromJSON(URL, flatten = TRUE)
+  out <- tryCatch(
+    {
+      cuisine = gsub(" ","+",cuisine)
+      city = gsub(" ","+",city)
 
-  if(length(getData$response$data)!=0){
+      USfilter="{\"country\":\"US\"}"
 
-    fullFactualResponse = as.data.frame(getData$response)
+      cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
+      cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
 
-    #Make names more easily understandable by dropping "data." that factual attaches
-    names(fullFactualResponse) <- sub("data.", "\\2", names(fullFactualResponse))
+      allFilters=paste(USfilter,cityFilter,cuisineFilter,sep = ",")
 
-    nameLatLong = data.frame(name=fullFactualResponse$name
-                             ,longitude=as.double(fullFactualResponse$longitude)
-                             ,latitude=as.double(fullFactualResponse$latitude))
+      filters=paste0("{\"$and\":[",allFilters,"]}")
 
-    if(full)
-      fullFactualResponse
-    else
-      nameLatLong
+      URL=paste0(baseURL,"&filters=",filters,"&limit=",limit,"&offset=",offset,"&KEY=",factualAPIKey)
 
-  }
-  else{
-    warning("No restaurants with selected cuisine in this location")
-  }
+      getData <- jsonlite::fromJSON(URL, flatten = TRUE)
+
+      if(length(getData$response$data)!=0){
+
+        fullFactualResponse = as.data.frame(getData$response)
+
+        #Make names more easily understandable by dropping "data." that factual attaches
+        names(fullFactualResponse) <- sub("data.", "\\2", names(fullFactualResponse))
+
+        nameLatLong = data.frame(name=fullFactualResponse$name
+                                 ,longitude=as.double(fullFactualResponse$longitude)
+                                 ,latitude=as.double(fullFactualResponse$latitude))
+
+        if(full)
+          return(fullFactualResponse)
+        else
+          return(nameLatLong)
+      }
+      else{
+        warning("No restaurants with selected cuisine in this location")
+      }
+    },
+    error=function(cond) {
+      message(cond)
+      # Choose a return value in case of error
+      return(NA)
+    },
+    warning=function(cond) {
+      message(cond)
+      # Choose a return value in case of warning
+      return(NULL)
+    }
+  )#tryCatch
+  return(out)
 }
 
 

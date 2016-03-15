@@ -6,22 +6,35 @@
 #' @examples
 #' plotBusinesses("Mountain View",MountainView_Indian_Alcohol_Friendly)
 
-
 plotBusinesses <-function(city, businessDF){
   # library(ggmap)
+  out <- tryCatch(
+    {
+      longitude = latitude = NULL
 
-  longitude = latitude = NULL
+      citymap = get_map(location = city , zoom = 15, maptype = "roadmap" , source = "google")
 
-  citymap = get_map(location = city , zoom = 15, maptype = "roadmap" , source = "google")
+      citymap = ggmap(citymap)
 
-  citymap = ggmap(citymap)
-
-  citymap = citymap + ggplot2::geom_point(data=businessDF, ggplot2::aes(x=longitude, y=latitude),
-                       color = 'blue',
-                       size = 8, alpha = .6)
-  #citymap = citymap  +    ggplot2::geom_text(ggplot2::aes(label=name), data=businessDF, hjust=-1,
-              # fontface = 'bold',check_overlap = TRUE)
-  citymap
+      citymap = citymap + ggplot2::geom_point(data=businessDF, ggplot2::aes(x=longitude, y=latitude),
+                                              color = 'blue',
+                                              size = 8, alpha = .6)
+      #citymap = citymap  +    ggplot2::geom_text(ggplot2::aes(label=name), data=businessDF, hjust=-1,
+      # fontface = 'bold',check_overlap = TRUE)
+      citymap
+    },
+    error=function(cond) {
+      message(cond)
+      # Choose a return value in case of error
+      return(NA)
+    },
+    warning=function(cond) {
+      message(cond)
+      # Choose a return value in case of warning
+      return(NULL)
+    }
+  )#tryCatch
+  return(out)
 }
 
 

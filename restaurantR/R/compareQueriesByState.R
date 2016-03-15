@@ -6,11 +6,26 @@
 #' compareQueriesByState("Pizza Hut","Dominoe's")
 
 compareQueriesByState<-function(query1, query2){
-  df1 <- getQueryCountByUSState(query1)
-  df2 <- getQueryCountByUSState(query2)
+  out <- tryCatch(
+    {
+      df1 <- getQueryCountByUSState(query1)
+      df2 <- getQueryCountByUSState(query2)
 
-  compare = cbind(df1, df2)
+      compare = cbind(df1, df2)
 
-  ifelse(compare[,1] > compare[,2],query1, query2)
+      return(ifelse(compare[,1] > compare[,2],query1, query2))
+    },
+    error=function(cond) {
+      message(cond)
+      # Choose a return value in case of error
+      return(NA)
+    },
+    warning=function(cond) {
+      message(cond)
+      # Choose a return value in case of warning
+      return(NULL)
+    }
+  )#tryCatch
+  return(out)
 }
 

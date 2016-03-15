@@ -17,8 +17,11 @@ Imports:
     ggmap,
     curl,
     jsonlite,
-    plyr
+    plyr,
+    R6,
+    httr
 RoxygenNote: 5.0.1
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr

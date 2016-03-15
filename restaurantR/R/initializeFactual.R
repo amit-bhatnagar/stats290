@@ -4,10 +4,11 @@
 #' @import jsonlite
 #' @export
 #' @examples
-#' initializeFactual("mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo")
+#' initializeFactual("Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn")#mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo
 
 initializeFactual <- function(key){
-  factualAPIKey = ""
+  #factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
+  factualAPIKey = "Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn "
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
   URL = paste0(baseURL,"&KEY=",key)
 
