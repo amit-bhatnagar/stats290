@@ -25,7 +25,7 @@
 #' restaurantDF = restaurantObj$queryData(NA,NA,NULL) #Top restaurants in the US
 #' restaurantDF = restaurantObj$queryData("Redmond",NA,NULL) #Top restaurants in city of Redmond
 #' restaurantDF = restaurantObj$queryData("San Jose",NA,NULL) #Top restaurants in city of San Jose
-#' restaurantDF = restaurantObj$queryData(NULL,"Colorado",NULL) #Top restaurants in the state of Colorado
+#' restaurantDF = restaurantObj$queryData(NULL,"Colorado",NULL) #Top restaurants in Colorado
 #' @docType package
 #' @name yelpRTest
 NULL

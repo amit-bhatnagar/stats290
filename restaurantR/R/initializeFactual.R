@@ -4,7 +4,7 @@
 #' @import jsonlite
 #' @export
 #' @examples
-#' initializeFactual("Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn")#mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo
+#' initializeFactual("Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn")
 
 initializeFactual <- function(key){
   #factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
