@@ -3,29 +3,68 @@
 #' @import jsonlite ggmap
 #' @export
 #' @examples
-#' plotRestaurantsNearLocation("Space Needle")
+#' plotRestaurantsNearLocation("Empire State Building","Pizza" )
 
 
-plotRestaurantsNearLocation<-function(pointName){
+plotRestaurantsNearLocation<-function(pointName,cuisine){
   limit=20
   offset=0
   out <- tryCatch(
     {
+      if(missing(cuisine)){
+        cuisine = ""
+      }
+
       pointLatLong = geocode(pointName)
       pointLatLong = paste(pointLatLong[2],pointLatLong[1],sep = ",")
 
       factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
 
-      locURL <- paste0("http://api.v3.factual.com/t/places?geo={\"$point\":[",pointLatLong,"]}")
+      locURL <- paste0("http://api.v3.factual.com/t/restaurants-us?geo={\"$point\":[",pointLatLong,"]}")
       # 34.06021,-118.41828]}
 
-      URL=paste0(locURL,"&limit=",limit,"&offset=",offset,"&KEY=",factualAPIKey)
+      cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
+      allFilters=paste(cuisineFilter,sep = ",")
 
-      #    getData <- jsonlite::fromJSON(URL, flatten = TRUE)
-      #   df1 = as.data.frame(getData$response)
-      #
-      #   df2 = cbind(name=df1$data.name,longitude=df1$data.longitude,latitude=df1$data.latitude)
-      #   df2 = as.data.frame(df2)
+      filters=paste0("{\"$and\":[",allFilters,"]}")
+
+      URL=paste0(locURL,"&filters=",filters, "&limit=",limit,"&offset=",offset,"&KEY=",factualAPIKey)
+
+      getData <- jsonlite::fromJSON(URL, flatten = TRUE)
+
+        if(length(getData$response$data)!=0){
+
+          fullFactualResponse = as.data.frame(getData$response)
+
+          #Make names more easily understandable by dropping "data." that factual attaches
+          names(fullFactualResponse) <- sub("data.", "\\2", names(fullFactualResponse))
+
+          nameLatLong = data.frame(name=fullFactualResponse$name
+                                   ,longitude=as.double(fullFactualResponse$longitude)
+                                   ,latitude=as.double(fullFactualResponse$latitude))
+
+          if(full)
+            return(fullFactualResponse)
+          else
+            return(nameLatLong)
+        }  else{
+          warning("No results found near",pointName)
+        }
+
+
+        bbox <- ggmap::make_bbox(nameLatLong$longitude, nameLatLong$latitude, f = 0.1)
+
+        citymap = get_map(location = bbox , maptype = "roadmap" , source = "google")
+
+        citymap = ggmap(citymap)
+
+        citymap = citymap + ggplot2::geom_point(data=nameLatLong, ggplot2::aes(x=longitude, y=latitude),
+                                                color = 'red',
+                                                size = 4, alpha = .6)
+        #citymap = citymap  +    ggplot2::geom_text(ggplot2::aes(label=name), data=nameLatLong, hjust=-1,
+        # fontface = 'bold',check_overlap = TRUE)
+
+
     },
     error=function(cond) {
       message(cond)
