@@ -12,20 +12,20 @@
 getRestaurantByPriceRange<-function(city, priceRange, cuisine, full = FALSE){
   factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
-  limit=20
-  offset=0
+  limit <- 20
+  offset <- 0
 
   if(missing(cuisine)){
-    cuisine = ""
+    cuisine <- ""
   }
 
   out <- tryCatch(
     {
-      city = gsub(" ","+",city)
-      priceRange = tolower(priceRange)
-      supportedPriceRanges =c("very inexpensive","inexpensive","moderate","expensive","very expensive")
+      city <- gsub(" ","+",city)
+      priceRange <- tolower(priceRange)
+      supportedPriceRanges <- c("very inexpensive","inexpensive","moderate","expensive","very expensive")
 
-      isPriceRangeSupported = any(supportedPriceRanges == priceRange )
+      isPriceRangeSupported <- any(supportedPriceRanges == priceRange )
 
       if(!isPriceRangeSupported){
         warning(paste(priceRange,"is not a supported price range \n"))
@@ -38,20 +38,20 @@ getRestaurantByPriceRange<-function(city, priceRange, cuisine, full = FALSE){
       #Factual stores price-ranges as numeric values 1: Less than $15 2: $15-30 3: $30-50 4: $50-75 5: $75+
       # We now convert the user-supplied price-range to one of these
 
-      priceRange =  which.max(supportedPriceRanges == priceRange)
+      priceRange <- which.max(supportedPriceRanges == priceRange)
 
-      USfilter="{\"country\":\"US\"}"
+      USfilter <- "{\"country\":\"US\"}"
 
-      cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
-      priceFilter = paste0("{\"price\":{\"$eq\":\"",priceRange,"\"}}")
+      cityFilter <- paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
+      priceFilter <- paste0("{\"price\":{\"$eq\":\"",priceRange,"\"}}")
 
-      cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
-      allFilters=paste(cityFilter,priceFilter,cuisineFilter,sep = ",")
+      cuisineFilter <- paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
+      allFilters <- paste(cityFilter,priceFilter,cuisineFilter,sep = ",")
 
-      filters=paste0("{\"$and\":[",allFilters,"]}")
+      filters <- paste0("{\"$and\":[",allFilters,"]}")
 
 
-      URL = paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
+      URL <- paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
       getData <- jsonlite::fromJSON(URL, flatten = TRUE)
 
       if(length(getData$response$data)!=0){
@@ -61,14 +61,15 @@ getRestaurantByPriceRange<-function(city, priceRange, cuisine, full = FALSE){
         #Make names more easily understandable by dropping "data." that factual attaches
         names(fullFactualResponse) <- sub("data.", "\\2", names(fullFactualResponse))
 
-        nameLatLong = data.frame(name=fullFactualResponse$name
-                                 ,longitude=as.double(fullFactualResponse$longitude)
-                                 ,latitude=as.double(fullFactualResponse$latitude))
+        nameLatLong <- data.frame(name=fullFactualResponse$name,
+                                  longitude=as.double(fullFactualResponse$longitude),
+                                  latitude=as.double(fullFactualResponse$latitude))
 
-        if(full)
+        if(full){
           return(fullFactualResponse)
-        else
+        } else{
           return(nameLatLong)
+        }
       }  else{
         warning("No results for the requested price-range")
       }

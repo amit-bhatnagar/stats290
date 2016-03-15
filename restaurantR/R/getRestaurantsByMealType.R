@@ -10,23 +10,23 @@
 #' getRestaurantsByMealType("Bellevue","Lunch","Thai")
 
 getRestaurantsByMealType<-function(city, mealType, cuisine, full = FALSE){
-  limit=20
-  offset=0
-  factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
+  limit <- 20
+  offset <- 0
+  factualAPIKey <- "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
 
   if(missing(cuisine)){
-    cuisine = ""
+    cuisine <- ""
   }
 
   out <- tryCatch(
     {
-      city = gsub(" ","+",city)
+      city <- gsub(" ","+",city)
 
-      mealType = tolower(mealType)
-      supportedMealTypes =c("lunch","dinner","breakfast")
+      mealType <- tolower(mealType)
+      supportedMealTypes <- c("lunch","dinner","breakfast")
 
-      isMealTypeSupported = any(supportedMealTypes == mealType )
+      isMealTypeSupported <- any(supportedMealTypes == mealType )
 
       if(!isMealTypeSupported){
         warning(paste(mealType,"is not a supported meal type \n"))
@@ -36,36 +36,37 @@ getRestaurantsByMealType<-function(city, mealType, cuisine, full = FALSE){
         #return()
       }
 
-      mealType=paste0("meal_",mealType)
+      mealType <- paste0("meal_",mealType)
 
-      USfilter="{\"country\":\"US\"}"
+      USfilter <- "{\"country\":\"US\"}"
 
-      cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
+      cityFilter <- paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
 
-      mealTypeFilter = paste0("{\"",mealType,"\":{\"$eq\":\"TRUE\"}}")
+      mealTypeFilter <- paste0("{\"",mealType,"\":{\"$eq\":\"TRUE\"}}")
 
 
-      cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
-      allFilters=paste(cityFilter,mealTypeFilter,cuisineFilter,sep = ",")
+      cuisineFilter <- paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
+      allFilters <- paste(cityFilter,mealTypeFilter,cuisineFilter,sep = ",")
 
-      filters=paste0("{\"$and\":[",allFilters,"]}")
+      filters <- paste0("{\"$and\":[",allFilters,"]}")
 
-      URL = paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
+      URL <- paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
       getData <- jsonlite::fromJSON(URL, flatten = TRUE)
 
-      fullFactualResponse = as.data.frame(getData$response)
+      fullFactualResponse <- as.data.frame(getData$response)
 
       #Make names more easily understandable by dropping "data." that factual attaches
       names(fullFactualResponse) <- sub("data.", "\\2", names(fullFactualResponse))
 
-      nameLatLong = data.frame(name=fullFactualResponse$name
-                               ,longitude=as.double(fullFactualResponse$longitude)
-                               ,latitude=as.double(fullFactualResponse$latitude))
+      nameLatLong <- data.frame(name=fullFactualResponse$name,
+                                longitude=as.double(fullFactualResponse$longitude),
+                                latitude=as.double(fullFactualResponse$latitude))
 
-      if(full)
+      if(full){
         return(fullFactualResponse)
-      else
+      } else{
         return(nameLatLong)
+      }
     },
     error=function(cond) {
       message(cond)

@@ -12,22 +12,22 @@
 
 getRestaurantsWithDeliveryOrTakeOut<-function(city, orderType, cuisine, full = FALSE){
 
-  factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
+  factualAPIKey <- "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
-  limit=20
-  offset=0
+  limit <- 20
+  offset <- 0
 
   if(missing(cuisine)){
-    cuisine = ""
+    cuisine <- ""
   }
   out <- tryCatch(
     {
-      city = gsub(" ","+",city)
+      city <- gsub(" ","+",city)
 
-      orderType = tolower(orderType)
-      supportedOrderTypes =c("delivery","takeout")
+      orderType <- tolower(orderType)
+      supportedOrderTypes <- c("delivery","takeout")
 
-      isOrderTypeSupported = any(supportedOrderTypes == orderType )
+      isOrderTypeSupported <- any(supportedOrderTypes == orderType )
 
       if(!isOrderTypeSupported){
         warning(paste(orderType,"is not a supported order type \n"))
@@ -40,38 +40,38 @@ getRestaurantsWithDeliveryOrTakeOut<-function(city, orderType, cuisine, full = F
         orderType="meal_deliver"
       else orderType="meal_takeout"
 
-      USfilter="{\"country\":\"US\"}"
+      USfilter <- "{\"country\":\"US\"}"
 
-      cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
+      cityFilter <- paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
 
-      orderTypeFilter = paste0("{\"",orderType,"\":{\"$eq\":\"TRUE\"}}")
+      orderTypeFilter <- paste0("{\"",orderType,"\":{\"$eq\":\"TRUE\"}}")
 
-      cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
+      cuisineFilter <- paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
 
-      allFilters=paste(cityFilter,orderTypeFilter,cuisineFilter,sep = ",")
+      allFilters <- paste(cityFilter,orderTypeFilter,cuisineFilter,sep = ",")
 
-      filters=paste0("{\"$and\":[",allFilters,"]}")
+      filters <- paste0("{\"$and\":[",allFilters,"]}")
 
-      URL = paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
+      URL <- paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
 
       getData <- jsonlite::fromJSON(URL, flatten = TRUE)
 
       if(length(getData$response$data)!=0){
 
-        fullFactualResponse = as.data.frame(getData$response)
+        fullFactualResponse <- as.data.frame(getData$response)
 
         #Make names more easily understandable by dropping "data." that factual attaches
         names(fullFactualResponse) <- sub("data.", "\\2", names(fullFactualResponse))
 
-        nameLatLong = data.frame(name=fullFactualResponse$name
-                                 ,longitude=as.double(fullFactualResponse$longitude)
-                                 ,latitude=as.double(fullFactualResponse$latitude))
+        nameLatLong <- data.frame(name=fullFactualResponse$name,
+                                  longitude=as.double(fullFactualResponse$longitude),
+                                  latitude=as.double(fullFactualResponse$latitude))
 
-        if(full)
+        if(full){
           return(fullFactualResponse)
-        else
+        } else{
           return(nameLatLong)
-
+        }
       }
       else{
         warning("No restaurants with selected cuisine that offer ", orderType)

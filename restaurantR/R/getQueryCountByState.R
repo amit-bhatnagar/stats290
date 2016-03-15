@@ -11,18 +11,18 @@ getQueryCountByUSState<-function(query){
 
   out <- tryCatch(
     {
-      queryURLEncoded = URLencode(query)
+      queryURLEncoded <- URLencode(query)
 
-      URL=paste0(baseURL,"&q=",queryURLEncoded,"&KEY=",factualAPIKey)
+      URL <- paste0(baseURL,"&q=",queryURLEncoded,"&KEY=",factualAPIKey)
 
       getData <- jsonlite::fromJSON(URL, flatten = TRUE)
-      dataByRegion = as.data.frame(getData$response$data$region)
+      dataByRegion <- as.data.frame(getData$response$data$region)
 
       #Capitalizing State name abbreviations
-      names(dataByRegion) = toupper(names(dataByRegion))
+      names(dataByRegion) <- toupper(names(dataByRegion))
 
       #Factual names Indiana as "IN.". Renaming this to "IN" for consistency
-      colnames(dataByRegion)[which(names(dataByRegion)=="IN.")] = "IN"
+      colnames(dataByRegion)[which(names(dataByRegion)=="IN.")] <- "IN"
 
       #Drop DC as it does not appear in the list of 50 states in R
       dataByRegion=dataByRegion[names(dataByRegion) != "DC" ]
@@ -30,18 +30,18 @@ getQueryCountByUSState<-function(query){
       #Not all states may be present in the code,
       #following code gets full list of US states filling 0 for the ones missing in original code
 
-      tempDF = data.frame(t((tempVal=rep(0,50))))
-      names(tempDF)=state.abb
+      tempDF <- data.frame(t((tempVal=rep(0,50))))
+      names(tempDF) <- state.abb
 
       dataByRegion <- plyr::rbind.fill(dataByRegion,tempDF)
-      dataByRegion=dataByRegion[,order(names(dataByRegion))]
+      dataByRegion <- dataByRegion[,order(names(dataByRegion))]
 
       #Replace NA by 0
       dataByRegion[is.na(dataByRegion)] <- 0
 
-      dataByRegion=t(dataByRegion[1,])
+      dataByRegion <- t(dataByRegion[1,])
 
-      colnames(dataByRegion) = paste0("Count of restaurants matching \"",query,"\" by state")
+      colnames(dataByRegion) <- paste0("Count of restaurants matching \"",query,"\" by state")
       return(dataByRegion)
     },
     error=function(cond) {

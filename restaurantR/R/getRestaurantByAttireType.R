@@ -11,22 +11,22 @@
 
 getRestaurantByAttireType<-function(city, attireType, cuisine, full = FALSE){
 
-  factualAPIKey = "Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn"#"mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
+  factualAPIKey <- "Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn"#"mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
-  offset=0
+  offset <- 0
 
   if(missing(cuisine)){
-    cuisine = ""
+    cuisine  <-  ""
   }
 
   out <- tryCatch(
     {
-      city = gsub(" ","+",city)
-      attireType = tolower(attireType)
-      supportedAttireTypes =c("streetwear","casual","business casual","smart casual","formal")
+      city <- gsub(" ","+",city)
+      attireType <- tolower(attireType)
+      supportedAttireTypes <- c("streetwear","casual","business casual","smart casual","formal")
 
 
-      isAttireTypeSupported = any(supportedAttireTypes == attireType )
+      isAttireTypeSupported <- any(supportedAttireTypes == attireType )
 
       if(!isAttireTypeSupported){
         warning(paste(attireType,"is not a supported attire type \n"))
@@ -35,37 +35,38 @@ getRestaurantByAttireType<-function(city, attireType, cuisine, full = FALSE){
         return(NA)
       }
 
-      attireType = gsub(" ","+",attireType)
+      attireType <- gsub(" ","+",attireType)
 
-      USfilter="{\"country\":\"US\"}"
+      USfilter <- "{\"country\":\"US\"}"
 
-      cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
-      attireFilter = paste0("{\"attire\":{\"$eq\":\"",attireType,"\"}}")
+      cityFilter <- paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
+      attireFilter <- paste0("{\"attire\":{\"$eq\":\"",attireType,"\"}}")
 
-      cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
-      allFilters=paste(cityFilter,attireFilter,cuisineFilter,sep = ",")
+      cuisineFilter <- paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
+      allFilters <- paste(cityFilter,attireFilter,cuisineFilter,sep = ",")
 
-      filters=paste0("{\"$and\":[",allFilters,"]}")
+      filters <- paste0("{\"$and\":[",allFilters,"]}")
 
-      URL = paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
-      print(URL)
+      URL <- paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
+
       getData <- jsonlite::fromJSON(URL, flatten = TRUE)
 
       if(length(getData$response$data)!=0){
 
-        fullFactualResponse = as.data.frame(getData$response)
+        fullFactualResponse <- as.data.frame(getData$response)
 
         #Make names more easily understandable by dropping "data." that factual attaches
         names(fullFactualResponse) <- sub("data.", "\\2", names(fullFactualResponse))
 
-        nameLatLong = data.frame(name=fullFactualResponse$name
-                                 ,longitude=as.double(fullFactualResponse$longitude)
-                                 ,latitude=as.double(fullFactualResponse$latitude))
+        nameLatLong <- data.frame(name=fullFactualResponse$name,
+                                  longitude=as.double(fullFactualResponse$longitude),
+                                  latitude=as.double(fullFactualResponse$latitude))
 
-        if(full)
+        if(full){
           return(fullFactualResponse)
-        else
+        } else{
           return(nameLatLong)
+        }
       }  else{
         warning("No results with the requested attire type")
       }

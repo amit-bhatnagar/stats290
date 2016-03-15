@@ -12,43 +12,44 @@ getRestaurantsWithWiFi<-function(city, cuisine, full = FALSE){
 
   limit=20
   offset=0
-  factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
+  factualAPIKey <- "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
   if(missing(cuisine)){
-    cuisine = ""
+    cuisine <- ""
   }
 
   out <- tryCatch(
     {
-      city = gsub(" ","+",city)
+      city <- gsub(" ","+",city)
 
-      USfilter="{\"country\":\"US\"}"
+      USfilter <- "{\"country\":\"US\"}"
 
-      cityFilter = paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
-      wifiFilter = "{\"wifi\":{\"$eq\":\"TRUE\"}}"
+      cityFilter <- paste0("{\"locality\":{\"$eq\":\"",city,"\"}}")
+      wifiFilter <- "{\"wifi\":{\"$eq\":\"TRUE\"}}"
 
-      cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
-      allFilters=paste(cityFilter,wifiFilter,cuisineFilter,sep = ",")
+      cuisineFilter <- paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
+      allFilters <- paste(cityFilter,wifiFilter,cuisineFilter,sep = ",")
 
-      filters=paste0("{\"$and\":[",allFilters,"]}")
+      filters <- paste0("{\"$and\":[",allFilters,"]}")
 
-      URL = paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
+      URL <- paste0(baseURL,"filters=",filters,"&KEY=",factualAPIKey)
       getData <- jsonlite::fromJSON(URL, flatten = TRUE)
 
 
-      fullFactualResponse = as.data.frame(getData$response)
+      fullFactualResponse <- as.data.frame(getData$response)
 
       #Make names more easily understandable by dropping "data." that factual attaches
       names(fullFactualResponse) <- sub("data.", "\\2", names(fullFactualResponse))
 
-      nameLatLong = data.frame(name=fullFactualResponse$name
-                               ,longitude=as.double(fullFactualResponse$longitude)
-                               ,latitude=as.double(fullFactualResponse$latitude))
+      nameLatLong <- data.frame(name=fullFactualResponse$name,
+                                longitude=as.double(fullFactualResponse$longitude),
+                                latitude=as.double(fullFactualResponse$latitude))
 
-      if(full)
+      if(full){
         return(fullFactualResponse)
-      else
+      } else{
         return(nameLatLong)
+      }
 
     },
     error=function(cond) {

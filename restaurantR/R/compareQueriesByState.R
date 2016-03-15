@@ -11,7 +11,7 @@ compareQueriesByState<-function(query1, query2){
       df1 <- getQueryCountByUSState(query1)
       df2 <- getQueryCountByUSState(query2)
 
-      compare = cbind(df1, df2)
+      compare <- cbind(df1, df2)
 
       return(ifelse(compare[,1] > compare[,2],query1, query2))
     },
