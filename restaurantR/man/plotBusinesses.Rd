@@ -4,17 +4,15 @@
 \alias{plotBusinesses}
 \title{Plot business on a map from a city name and a date-frame of business name, longitude and latitude}
 \usage{
-plotBusinesses(city, businessDF)
+plotBusinesses(businessDF)
 }
 \arguments{
-\item{city}{A city name}
-
 \item{businessDF}{a date-frame of business name, longitude and latitude}
 }
 \description{
 Plot business on a map from a city name and a date-frame of business name, longitude and latitude
 }
 \examples{
-plotBusinesses("Mountain View",MountainView_Indian_Alcohol_Friendly)
+plotBusinesses(MountainView_Indian_Alcohol_Friendly)
 }
 
