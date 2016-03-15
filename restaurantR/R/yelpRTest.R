@@ -20,7 +20,6 @@
 #' restaurantObj <- yelpR$new()
 #' restaurantObj$InitializeYelp()
 #' restaurantDF = restaurantObj$queryData("Bellevue","WA","Chinese")
-#' #' restaurantDF = restaurantObj$queryData(NULL,NULL,"Indian")
 #' restaurantDF = restaurantObj$queryData(NULL,NULL,NULL)
 #' restaurantDF = restaurantObj$queryData(1,NULL,NULL) #Error
 #' restaurantDF = restaurantObj$queryData(NA,NA,NULL) #Top restaurants in the US
