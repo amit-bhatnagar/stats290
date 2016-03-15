@@ -1,9 +1,10 @@
 #'  Given a point ofinterest, provide a list of nearby restaurants
 #' @param pointName A point of interest like "Golden Gate Bridge" or "Empire State Building"
+#' @param cuisine Cuisine name like "Indian", "Thai" etc.
 #' @import jsonlite ggmap
 #' @export
 #' @examples
-#' plotRestaurantsNearLocation("Empire State Building","Pizza" )
+#' plotRestaurantsNearLocation("Empire State Building", "Pizza")
 
 
 plotRestaurantsNearLocation<-function(pointName,cuisine){
@@ -43,26 +44,30 @@ plotRestaurantsNearLocation<-function(pointName,cuisine){
                                    ,longitude=as.double(fullFactualResponse$longitude)
                                    ,latitude=as.double(fullFactualResponse$latitude))
 
-          if(full)
-            return(fullFactualResponse)
-          else
-            return(nameLatLong)
+          bbox <- ggmap::make_bbox(nameLatLong$longitude, nameLatLong$latitude, f = 0.1)
+
+          citymap = get_map(location = bbox , maptype = "hybrid" , source = "osm")
+
+          citymap = ggmap(citymap)
+
+
+          citymap = citymap + ggplot2::geom_point(data=nameLatLong, ggplot2::aes(x=longitude, y=latitude),
+                                                  color = 'blue',
+                                                  shape = 18,
+                                                  size = 8, alpha = 0.6)
+
+
+          #Renaming as a work-around to a known ggplot2 issue
+
+          names(nameLatLong) = c("name","lon","lat")
+          citymap = citymap  +    ggplot2::geom_text(ggplot2::aes(label=name), data=nameLatLong, hjust= - 0.05,
+                                                     fontface = 'bold',color = "blue",
+                                                     size = 5, check_overlap = TRUE)
         }  else{
-          warning("No results found near",pointName)
+          warning("No results found near ", pointName)
         }
 
 
-        bbox <- ggmap::make_bbox(nameLatLong$longitude, nameLatLong$latitude, f = 0.1)
-
-        citymap = get_map(location = bbox , maptype = "roadmap" , source = "google")
-
-        citymap = ggmap(citymap)
-
-        citymap = citymap + ggplot2::geom_point(data=nameLatLong, ggplot2::aes(x=longitude, y=latitude),
-                                                color = 'red',
-                                                size = 4, alpha = .6)
-        #citymap = citymap  +    ggplot2::geom_text(ggplot2::aes(label=name), data=nameLatLong, hjust=-1,
-        # fontface = 'bold',check_overlap = TRUE)
 
 
     },
@@ -70,12 +75,13 @@ plotRestaurantsNearLocation<-function(pointName,cuisine){
       message(cond)
       # Choose a return value in case of error
       return(NA)
-    },
-    warning=function(cond) {
-      message(cond)
-      # Choose a return value in case of warning
-      return(NULL)
     }
+#     ,
+#     warning=function(cond) {
+#       message(cond)
+#       # Choose a return value in case of warning
+#       return(NULL)
+#     }
   )#tryCatch
   return(out)
 }

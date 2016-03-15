@@ -4,15 +4,17 @@
 \alias{plotRestaurantsNearLocation}
 \title{Given a point ofinterest, provide a list of nearby restaurants}
 \usage{
-plotRestaurantsNearLocation(pointName)
+plotRestaurantsNearLocation(pointName, cuisine)
 }
 \arguments{
 \item{pointName}{A point of interest like "Golden Gate Bridge" or "Empire State Building"}
+
+\item{cuisine}{Cuisine name like "Indian", "Thai" etc.}
 }
 \description{
 Given a point ofinterest, provide a list of nearby restaurants
 }
 \examples{
-plotRestaurantsNearLocation("Space Needle")
+plotRestaurantsNearLocation("Empire State Building", "Pizza")
 }
 
