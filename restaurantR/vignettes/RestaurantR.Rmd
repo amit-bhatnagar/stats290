@@ -1,6 +1,6 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "restaurantR package"
+author: "Amit Bhatnagar and Kavitha Balasubramanian"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -9,31 +9,18 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+## Introduction 
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+Factual is an open data platform primarily focused on data for local businesses. Factual database is used by leading players in Local Business information including Facebook, Groupon, and Bing Local search. However, currently there is only minimal support for Factual in R. (There is an unofficial package last updated in 2011 and is not even functional anymore.  https://cran.r-project.org/web/packages/factualR/index.html) Our package allows the user to extract relevant information on local restaurants without needing to know the intricacies of Factual database. 
 
-## Vignette Info
+## Target user persona
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+The typical persona of this package would be a person working on restaurant research for business uses. An example of this may be a content developer for a restaurant blog or magazine or a person working in new initiatives department of a food chain. 
 
-## Styles
+## Scope and limitations 
+For this iteration of the project, we have kept the focus limited to the restaurants in United States only. Also, we are using the free, verified version of Factual, which puts certain limitations on the results returned (Limitations include: 1) Only top 20 results matching a query are returned. 2) There are some limits on queries per minute and queries per day.) These limits can be resolved by an enterprize user by purchasing a business license from Factual. 
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-Sample R file..wdnndudouwou
-wq
-dwidjiwjd
-jidiw
-dw
+## Some examples 
 
 
 ```{r, fig.show='hold'}
@@ -42,12 +29,6 @@ library(restaurantR)
 getAlcoholFriendlyRestaurants("Mountain View","Indian")
 
 ```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
 
 Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
 

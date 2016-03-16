@@ -1,3 +1,9 @@
+##
+## Global variable for factualAPIKey. Setting it to a default value
+##
+# factualAPIKey <- "Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn"
+factualAPIKey <- "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
+
 #' Initialize factual and set factualAPIKey as a global variable
 #' where it can be accessed by other functions
 #' @param key a restaurant-related query like "Subway" or "Indian"
@@ -7,8 +13,6 @@
 #' initializeFactual("Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn")
 
 initializeFactual <- function(key){
-  #factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
-  factualAPIKey = "Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn "
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
   URL = paste0(baseURL,"&KEY=",key)
 

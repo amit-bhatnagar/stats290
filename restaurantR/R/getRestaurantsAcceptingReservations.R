@@ -10,8 +10,7 @@
 
 
 getRestaurantsAcceptingReservations<-function(city, cuisine, full = FALSE){
-  # factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
-  factualAPIKey <- "Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn"
+  factualAPIKey  <-  factualAPIKey
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
   limit <- 20
   offset <- 0

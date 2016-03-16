@@ -19,8 +19,7 @@ specific criteria.
 \describe{
 \item{\code{consumerKey}}{consumerKey used to establish a yelp connection}
 
-\item{\code{consumerSecret}}{consumerSecret used to establish a yelp c
-onnection}
+\item{\code{consumerSecret}}{consumerSecret used to establish a yelp connection}
 
 \item{\code{token}}{token used to establish a yelp connection}
 
@@ -55,12 +54,28 @@ The user then queries this data frame for further results depending on the natur
   \item{\code{getData()}}{Returns the restaurant data of the last issued query.}
   \item{\code{queryData(city, state, cusine)}}{Returns restaurant data as a data frame based on the filter criteria specified.
                InitializeYelp should return true for this method to be successful.}
+   \item{\code{shortlistRestaurants(city, state, cusine)}}{Returns 6 shortlisted restaurants as a data frame based on the filter criteria specified.
+               InitializeYelp should return true for this method to be successful. Basic information about the restaurant such as name, ph, url,
+               rating and review are avaialble for the user to analyze.}
+
 }
 }
 \examples{
 restaurantObj <- yelpR$new()
 restaurantObj$InitializeYelp()
-restaurantDF = restaurantObj$queryData("Bellevue","WA","Chinese")
+restaurantDF = restaurantObj$queryData("Stanford","CA","Indian")
+head(restaurantDF)$businesses.name
+
+restaurantDF = restaurantObj$queryData("San Francisco","CA","Spanish")
+head(restaurantDF)$businesses.name
+
+restaurantDF = restaurantObj$shortlistRestaurants("Napa Valley","CA","Italian")
+print(restaurantDF)
+print("Take your significant other, goto these places and Enjoy !")
+
+restaurantDF = restaurantObj$getRestaurantWithDeals("San Francisco","CA","Indian")
+head(restaurantDF)$businesses.name
+
 
 }
 \keyword{datasets}

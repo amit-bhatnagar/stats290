@@ -12,7 +12,7 @@
 getRestaurantsByMealType<-function(city, mealType, cuisine, full = FALSE){
   limit <- 20
   offset <- 0
-  factualAPIKey <- "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
+  factualAPIKey  <-  factualAPIKey
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
 
   if(missing(cuisine)){

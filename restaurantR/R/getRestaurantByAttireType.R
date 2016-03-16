@@ -11,7 +11,7 @@
 
 getRestaurantByAttireType<-function(city, attireType, cuisine, full = FALSE){
 
-  factualAPIKey <- "Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn"#"mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
+  factualAPIKey <- factualAPIKey
   baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
   offset <- 0
 
@@ -24,7 +24,6 @@ getRestaurantByAttireType<-function(city, attireType, cuisine, full = FALSE){
       city <- gsub(" ","+",city)
       attireType <- tolower(attireType)
       supportedAttireTypes <- c("streetwear","casual","business casual","smart casual","formal")
-
 
       isAttireTypeSupported <- any(supportedAttireTypes == attireType )
 

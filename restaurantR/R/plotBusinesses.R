@@ -8,7 +8,7 @@
 plotBusinesses <-function(nameLatLong){
   out <- tryCatch(
     {
-      longitude <- latitude <- NULL
+      longitude <- latitude <- name <- NULL
 
       bbox <- ggmap::make_bbox(nameLatLong$longitude, nameLatLong$latitude)
 

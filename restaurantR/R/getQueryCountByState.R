@@ -6,8 +6,8 @@
 #' getQueryCountByUSState("Chipotle")
 
 getQueryCountByUSState<-function(query){
-  factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
-  baseURL <- "http://api.v3.factual.com/t/places/facets?select=region&filters={\"country\":\"US\"}&limit=60"
+  factualAPIKey <- factualAPIKey
+  baseURL <- "http://api.v3.factual.com/t/restaurants-us/facets?select=region&filters={\"country\":\"US\"}&limit=60"
 
   out <- tryCatch(
     {
