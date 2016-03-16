@@ -13,11 +13,12 @@ factualAPIKey <- "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
 #' initializeFactual("Ov7qkrDDdAqLwVneSnZZssSwT8nttVb9urqugaDn")
 
 initializeFactual <- function(key){
-  baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
-  URL = paste0(baseURL,"&KEY=",key)
+
 
   out<- tryCatch(
     {
+      baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
+      URL = paste0(baseURL,"&KEY=",key)
     jsonlite::fromJSON(URL)
     #If no error, set factualAPIKey that other functions can use
     factualAPIKey <<- key

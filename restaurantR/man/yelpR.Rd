@@ -57,6 +57,9 @@ The user then queries this data frame for further results depending on the natur
    \item{\code{shortlistRestaurants(city, state, cusine)}}{Returns 6 shortlisted restaurants as a data frame based on the filter criteria specified.
                InitializeYelp should return true for this method to be successful. Basic information about the restaurant such as name, ph, url,
                rating and review are avaialble for the user to analyze.}
+   \item{\code{getRestaurantWithDeals(city, state, cusine)}}{Returns restaurants that offer deals based on the filter criteria specified.
+               InitializeYelp should return true for this method to be successful. All information about the restaurant is returned for the usser
+               to analyze }
 
 }
 }

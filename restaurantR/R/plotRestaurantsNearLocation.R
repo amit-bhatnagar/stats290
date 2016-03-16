@@ -4,7 +4,7 @@
 #' @import jsonlite ggmap
 #' @export
 #' @examples
-#' plotRestaurantsNearLocation("Stanford University", "Pizza")
+#' plotRestaurantsNearLocation("Empire State Building", "Pizza")
 
 
 plotRestaurantsNearLocation<-function(pointName,cuisine){
@@ -35,6 +35,7 @@ plotRestaurantsNearLocation<-function(pointName,cuisine){
 
       URL <- paste0(locURL, "&filters=",filters, "&limit=",
                     limit,"&offset=", offset, "&KEY=", factualAPIKey)
+      cat(URL)
 
       getData <- jsonlite::fromJSON(URL, flatten = TRUE)
 

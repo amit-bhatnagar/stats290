@@ -1,7 +1,7 @@
 ---
 title: "restaurantR package"
 author: "Amit Bhatnagar and Kavitha Balasubramanian"
-date: "`r Sys.Date()`"
+date: "2016-03-16"
 output: rmarkdown::pdf_document
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -17,71 +17,68 @@ The typical persona of this package would be a person working on restaurant rese
 
 ## Examples 
 ####Getting list of restauatants in a city meeting certain criteria 
-```{r}
+
+```r
 library(restaurantR)
 #Get Expensive Thai restaurants in New York
 thaiExpensiveNYC = getRestaurantByPriceRange("New York","expensive","Thai")
 head(thaiExpensiveNYC,2)
+```
+
+```
+## [1] NA
+```
+
+```r
 #Get Pizza restaurants that allow smoking in Houston
 pizzaSmokingHouston = getSmokingFriendlyRestaurants("Houston","Pizza")
 head(pizzaSmokingHouston,2)
 ```
 
+```
+## [1] NA
+```
+
 ####Getting full result from Factual for further analysis 
-```{r}
+
+```r
 #Get full Factual results Expensive Thai restaurants in New York
 fullthaiExpensiveNYC = getRestaurantByPriceRange("New York","expensive","Thai", TRUE)
 # Only few names shown because of space constraints. 
 head(names(fullthaiExpensiveNYC))
 ```
+
+```
+## NULL
+```
 ###Plot results on a map
-```{r }
+
+```r
 #Plot Pizza restaurants that allow smoking in Houston
 plotBusinesses(pizzaSmokingHouston)
 ```
 
+```
+## [1] NA
+```
+
 ### Compare two queries across the US and report which query leads in which state and plot.
-```{r}
+
+```r
 #Plot Pizza Hut and Dominoe's contest by state. 
 plotQueryComparisonByState("Pizza Hut","Dominoe's")
 ```
 
+```
+## [1] NA
+```
+
 ### Plot chain's presence by state
-```{r}
-#Plot number of Chipotle restaurants by state
-mapQueryCountByUSState("Chipotle")
-```
 
-### Yelp Sort restaurants at any location
-```{r}
-restaurantObj <- yelpR$new()
-restaurantObj$InitializeYelp()
-restaurantDF = restaurantObj$queryData("Napa Valley","CA","French") 
-#Following are the top restaurants
-head(restaurantDF,3)$businesses.name
-```
 
-###Yelp Shortlist restaurants to obtain contact info
-```{r}
-restaurantDF = restaurantDF[,c("businesses.name","businesses.display_phone")]
-head(restaurantDF,2)
-```
 
-###Yelp Shortlist restaurants based on whether they offer deals
-```{r}
-restaurantDF = restaurantObj$getRestaurantWithDeals("Los Angeles","California","Mexican")
-head(restaurantDF,2)$businesses.name
-```
 
-### Scope and limitations 
-Applicable to US only, Factual free api limites query per min and day and returns only 20 results at a time. This can be extended by purchasing a business licsense from factual.
 
-### Future Work
-Word cloud and sentiment analysis of restaurant reviews (was not possible since yelp returned only 1 review), extend to facebook and twitter providers, extend to other businesses like hotels so as to be useful for a travel magazine
 
-### References 
----
-1. Factual API documentation: http://developer.factual.com/
-2. Factual Throttle limits: http://developer.factual.com/throttling-limits/
-3. Yelp API documentation: https://www.yelp.com/developers/documentation/v2/overview 
+
 

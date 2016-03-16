@@ -4,12 +4,12 @@
 \alias{getRestaurantsNearLocation}
 \title{Given a point ofinterest, provide a list of nearby restaurants}
 \usage{
-getRestaurantsNearLocation(pointName, category)
+getRestaurantsNearLocation(pointName, cuisine)
 }
 \arguments{
 \item{pointName}{A point of interest like "Golden Gate Bridge" or "Empire State Building"}
 
-\item{category}{Category name}
+\item{cuisine}{Cuisine name like "Indian", "Thai" etc.}
 }
 \description{
 Given a point ofinterest, provide a list of nearby restaurants
