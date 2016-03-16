@@ -34,10 +34,22 @@ test.yelpR <- function() {
   checkEquals(nrow(restaurantDF), 200, " Checking number of restaurants returned is 200 for Colorado")
   checkTrue(as.numeric(restaurantDF[1,"businesses.aggregaterating"]) >= as.numeric(restaurantDF[1,"businesses.aggregaterating"]), "Check sort order for state only - Colorado")
 
+  #Test the shortlist restaurant function
+  restaurantDF = restaurantObj$shortlistRestaurants("New York","NY","Italian")
+  checkEquals(nrow(restaurantDF), 6, " Checking number of restaurants returned is 6")
+  checkEquals(ncol(restaurantDF), 6, " Checking number of columns for restaurants returned is 6")
+
+  #Test the getRestaurantWithDeals function
+  restaurantDF = restaurantObj$getRestaurantWithDeals("Seattle","CA","Indian")
+  checkTrue(nrow(restaurantDF) >= 1, " Checking number of restaurants returned is 4, which is more than 1. Actual value is 4 but might be changing, so checking there is atleast one deal")
+  checkTrue(as.numeric(restaurantDF[1,"businesses.aggregaterating"]) >= as.numeric(restaurantDF[2,"businesses.aggregaterating"]), "Check sort order")
+
   checkException(restaurantObj$queryData(1,NULL,NULL), " Checking exception with non numeric arg")
   checkException(restaurantObj$queryData(NULL,"invalid",NULL), " Checking exception with invalid state argument")
   checkException(restaurantObj$queryData("invalid",NULL,NULL), " Checking exception with invalid state argument")
   checkException(restaurantObj$queryData(NULL,NULL,"invalid"), " Checking exception with invalid state argument")
+  checkException(restaurantObj$shortlistRestaurants(NULL,NULL,"invalid"), " Checking exception with invalid arguments")
+  checkException(restaurantObj$getRestaurantWithDeals(NULL,NULL,"invalid"), " Checking exception with invalid arguments")
 }
 
 
