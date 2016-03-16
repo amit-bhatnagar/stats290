@@ -9,19 +9,19 @@
 
 plotQueryComparisonByState<-function(query1, query2){
   #Setting variables to NULL to avoid NOTES in devtools::check
-  lat = long = latitude = longitude = group = NULL
+  lat <-  long <- latitude <- longitude <- group <- NULL
 
   out <- tryCatch(
     {
 
-      winner = compareQueriesByState(query1, query2)
+      winner <- compareQueriesByState(query1, query2)
       color <- ifelse(winner==query1,"red","green")
       winnerDF = as.data.frame(winner)
       winnerDF$color=color
 
       states <- data.frame(region = tolower(state.name),latitude=state.center$y,longitude=state.center$x)
       rownames(states) <-state.abb
-      chainDataWithLatLong = cbind(states,winnerDF)
+      chainDataWithLatLong <- cbind(states,winnerDF)
       us_state_map <- ggplot2::map_data('state')
 
       finalData <- merge(chainDataWithLatLong, us_state_map, by = 'region')

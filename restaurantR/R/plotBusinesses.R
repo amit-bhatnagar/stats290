@@ -8,15 +8,15 @@
 plotBusinesses <-function(nameLatLong){
   out <- tryCatch(
     {
-      longitude = latitude = NULL
+      longitude <- latitude <- NULL
 
       bbox <- ggmap::make_bbox(nameLatLong$longitude, nameLatLong$latitude)
 
-      citymap = get_map(location = bbox , maptype = "roadmap" , source = "osm")
+      citymap <- get_map(location = bbox , maptype = "roadmap" , source = "osm")
 
-      citymap = ggmap(citymap)
+      citymap <- ggmap(citymap)
 
-      citymap = citymap + ggplot2::geom_point(data=nameLatLong, ggplot2::aes(x=longitude, y=latitude),
+      citymap <- citymap + ggplot2::geom_point(data=nameLatLong, ggplot2::aes(x=longitude, y=latitude),
                                               color = 'blue',
                                               shape = 18,
                                               size = 8, alpha = 0.6)
@@ -24,8 +24,8 @@ plotBusinesses <-function(nameLatLong){
 
       #Renaming as a work-around to a known ggplot2 issue
 
-      names(nameLatLong) = c("name","lon","lat")
-      citymap = citymap  +    ggplot2::geom_text(ggplot2::aes(label=name), data=nameLatLong, hjust= - 0.05,
+      names(nameLatLong) <- c("name","lon","lat")
+      citymap <- citymap  +    ggplot2::geom_text(ggplot2::aes(label=name), data=nameLatLong, hjust= - 0.05,
                                                  fontface = 'bold',color = "blue",
                                                  size = 5, check_overlap = TRUE)
 
