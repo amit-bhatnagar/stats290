@@ -49,6 +49,9 @@ require(R6)
 #'    \item{\code{shortlistRestaurants(city, state, cusine)}}{Returns 6 shortlisted restaurants as a data frame based on the filter criteria specified.
 #'                InitializeYelp should return true for this method to be successful. Basic information about the restaurant such as name, ph, url,
 #'                rating and review are avaialble for the user to analyze.}
+#'    \item{\code{getRestaurantWithDeals(city, state, cusine)}}{Returns restaurants that offer deals based on the filter criteria specified.
+#'                InitializeYelp should return true for this method to be successful. All information about the restaurant is returned for the usser
+#'                to analyze }
 #'
 #' }
 #'
@@ -79,8 +82,29 @@ yelpR <- R6Class("yelpR",
                                 consumerSecret = NA,
                                 token = NA,
                                 token_secret = NA,
+                                flatten = function(col)
+                                {
+                                  address<-c()
+                                  for (j in 1:length(col))
+                                  {
+                                    l<-length(col[[j]])
+                                    str <- ""
+                                    for (k in 1:l)
+                                    {
+                                      str <- paste0(str,col[[j]][k],sep=", ")
+                                    }
+                                    address[j] <- str
+                                  }
+                                  #Remove trailing ", "
+                                  address <- substr(address, 1, nchar(address)-2)
+                                  address
+                                },
                                 NormalizeColumns = function(df)
                                 {
+                                  df[1:nrow(df),"display_address"] = private$flatten(df[,"businesses.location"]$display_address)
+                                  df[1:nrow(df),"city"] = unlist(df[,"businesses.location"]$city)
+                                  df[1:nrow(df),"neighborhoods"] = private$flatten(df[,"businesses.location"]$neighborhoods)
+                                  df[1:nrow(df),"cross_streets"] = private$flatten(df[,"businesses.location"]$cross_streets)
                                   drops <- drops <- c("businesses.location")#"businesses.gift_certificates","businesses.deals",
                                   df <- df[ , !(names(df) %in% drops)]
                                 }
@@ -93,8 +117,8 @@ yelpR <- R6Class("yelpR",
                        {
                          #Establish connection to yelp
                          print("Connecting to yelp.  If you are establishing yelp connection for first time,at the prompt to choose an auth type, select option 1. Otherwise you are good to go.")
-                         myapp <<- oauth_app("YELP", key=consumerKey, secret=consumerSecret)
-                         sig <<- sign_oauth1.0(myapp, token=token,token_secret=token_secret)
+                         myapp <- oauth_app("YELP", key=consumerKey, secret=consumerSecret)
+                         sig <- sign_oauth1.0(myapp, token=token,token_secret=token_secret)
                          private$consumerKey <- consumerKey
                          private$consumerSecret <- consumerSecret
                          private$token <- token
@@ -150,6 +174,7 @@ yelpR <- R6Class("yelpR",
                          {
                            limit <- 20
                            offset <- i*limit
+                           city = URLencode(city)
                            if(city =="any" || state == "any")
                            {
                              if(cusine != "any")
@@ -230,7 +255,7 @@ yelpR <- R6Class("yelpR",
 
                          restaurantDF = self$queryData(city, state, cusine)
                          restaurantDF = head(restaurantDF)
-                         shortlistColumns <- c("businesses.name", "businesses.display_phone", "businesses.url", "businesses.rating","businesses.review_count")
+                         shortlistColumns <- c("businesses.name", "display_address", "businesses.display_phone", "businesses.url", "businesses.rating","businesses.review_count")
                          restaurantDF <- restaurantDF[shortlistColumns]
                          private$data <- restaurantDF
                          return(private$data)
