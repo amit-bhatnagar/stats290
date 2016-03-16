@@ -2,7 +2,7 @@
 #require(httr)
 #require(jsonlite)
 #require(plyr)
-require(R6)
+#require(R6)
 #' Create a \code{yelpR} object
 #'
 #' @description \code{yelpR} is a restaurant object that encapsulates the data returned from yelp.
@@ -12,10 +12,10 @@ require(R6)
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @import httr jsonlite plyr
+#' @importFrom httr oauth_app sign_oauth1.0 GET content
+#' @import jsonlite plyr xml2
 #' @field consumerKey consumerKey used to establish a yelp connection
-#' @field consumerSecret consumerSecret used to establish a yelp c
-#' onnection
+#' @field consumerSecret consumerSecret used to establish a yelp connection
 #' @field token token used to establish a yelp connection
 #' @field token_secret token_secret used to establish a yelp connection
 #' @field data The most recent restaurant data set that queried by the user displaying top restaurants to analyze at the top. Two type of queries are supported - restaurant data
@@ -82,6 +82,7 @@ yelpR <- R6Class("yelpR",
                                 consumerSecret = NA,
                                 token = NA,
                                 token_secret = NA,
+                                sig = NA,
                                 flatten = function(col)
                                 {
                                   address<-c()
@@ -118,7 +119,7 @@ yelpR <- R6Class("yelpR",
                          #Establish connection to yelp
                          print("Connecting to yelp.  If you are establishing yelp connection for first time,at the prompt to choose an auth type, select option 1. Otherwise you are good to go.")
                          myapp <- oauth_app("YELP", key=consumerKey, secret=consumerSecret)
-                         sig <- sign_oauth1.0(myapp, token=token,token_secret=token_secret)
+                         private$sig <- sign_oauth1.0(myapp, token=token,token_secret=token_secret)
                          private$consumerKey <- consumerKey
                          private$consumerSecret <- consumerSecret
                          private$token <- token
@@ -204,7 +205,7 @@ yelpR <- R6Class("yelpR",
                            }
                            yelpURL <- URLencode(yelpURL)
                            #Trace print(yelpURL)
-                           yelpData <- GET(yelpURL, sig)
+                           yelpData <- GET(yelpURL, private$sig)
                            yelpDataContent <- content(yelpData)
                            yelpDataList <- jsonlite::fromJSON(toJSON(yelpDataContent))
                            #TRACE head(data.frame(yelpDataList))
