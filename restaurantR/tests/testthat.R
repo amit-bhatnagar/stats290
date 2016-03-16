@@ -51,8 +51,8 @@ test.compareQueriesByState <- function() {
 }
 
 test.getAlcoholFriendlyRestaurants <- function() {
-  checkEquals(length(getAlcoholFriendlyRestaurants("Mountain View","Indian")),9,"Ensure that data is returned for city")
-  checkEquals(length(getAlcoholFriendlyRestaurants("California","Mexican")),2,"Ensure that data is returned for state")
+  checkEquals(nrow(getAlcoholFriendlyRestaurants("Mountain View","Indian")),9,"Ensure that data is returned for city")
+  checkEquals(nrow(getAlcoholFriendlyRestaurants("California","Mexican")),2,"Ensure that data is returned for state")
 
   checkException(getAlcoholFriendlyRestaurants("Seattle","Invalid"),"Invalid cusine")
   checkException(getAlcoholFriendlyRestaurants("Invalid",NULL), " Checking exception with invalid arguments")
@@ -76,17 +76,20 @@ test.getCuisineforCity <- function() {
 }
 
 test.getKidsFriendlyRestaurants <- function() {
-  checkEquals(nrow(getKidsFriendlyRestaurants("Redmond","Thai")),20,"Ensure that data is returned for city")
-  checkEquals(nrow(getKidsFriendlyRestaurants("California","American")),20,"Ensure that data is returned for state")
+  checkEquals(nrow(getKidsFriendlyRestaurants("Redmond","Thai")),8,"Ensure that data is returned for city")
+  checkEquals(nrow(getKidsFriendlyRestaurants("California","American")),13,"Ensure that data is returned for state")
 
   checkException(getKidsFriendlyRestaurants("Seattle","Invalid"),"Invalid cusine")
   checkException(getKidsFriendlyRestaurants("Invalid",NULL), " Checking exception with invalid arguments")
 }
 
 test.getQueryCountByUSState <- function() {
-  checkEquals(nrow(getQueryCountByUSState("Chipotle")),20,"Ensure that data is returned")
+  checkEquals(nrow(getQueryCountByUSState("Chipotle")),50,"Ensure that data is returned for 50 states")
+  checkEquals(getQueryCountByUSState("Chipotle")["AK",],0,"No chipotle in AK")
 
-  checkException(getQueryCountByUSState ("Invalid"),"Invalid restaurant")
+  checkTrue(as.numeric(getQueryCountByUSState("Chipotle")["CA",]) >= 300, " Check that california has greater than 300 chipotles")
+
+  checkException(getQueryCountByUSState(NULL),"Invalid restaurant")
 }
 
 test.getRestaurantByAttireType <- function() {
@@ -98,8 +101,8 @@ test.getRestaurantByAttireType <- function() {
 }
 
 test.getRestaurantByDietType <- function() {
-  checkEquals(nrow(getRestaurantByDietType("Bellevue","Vegetarian","Thai")),20,"Ensure that data is returned for city")
-  checkEquals(nrow(getRestaurantByDietType("California","Vegan","American")),20,"Ensure that data is returned for state")
+  checkEquals(nrow(getRestaurantByDietType("Bellevue","Vegetarian","Thai")),13,"Ensure that data is returned for city")
+  checkEquals(nrow(getRestaurantByDietType("San Jose","Vegan","American")),20,"Ensure that data is returned for state")
 
   checkException(getRestaurantByDietType("Seattle","Invalid","Invalid"),"Invalid arguments")
   checkException(getRestaurantByDietType("Invalid",NULL,"Thai"), " Checking exception with invalid location")
@@ -115,32 +118,33 @@ test.getRestaurantByPriceRange <- function() {
 
 test.getRestaurantsAcceptingReservations <- function() {
   checkEquals(nrow(getRestaurantsAcceptingReservations("San Francisco","Asian")),20,"Ensure that data is returned for city")
-  checkEquals(nrow(getRestaurantsAcceptingReservations("California","American")),20,"Ensure that data is returned for state")
+  checkEquals(nrow(getRestaurantsAcceptingReservations("California","American")),14,"Ensure that data is returned for state")
 
   checkException(getRestaurantsAcceptingReservations("Seattle","Invalid"),"Invalid arguments")
   checkException(getRestaurantsAcceptingReservations(NULL,"Thai"), " Checking exception with invalid location")
 }
 
 test.getRestaurantsByMealType <- function() {
-  checkEquals(nrow(getRestaurantsByMealType("Bellevue","Lunch","Thai")),20,"Ensure that data is returned for city")
-  checkEquals(nrow(getRestaurantsByMealType("California","Dinner","Mexican")),20,"Ensure that data is returned for state")
+  checkEquals(nrow(getRestaurantsByMealType("New York","Lunch","Thai")),20,"Ensure that data is returned for city")
+  checkEquals(nrow(getRestaurantsByMealType("California","Dinner","Mexican")),2,"Ensure that data is returned for state")
 
   checkException(getRestaurantsByMealType("Invalid","Invalid","Invalid"),"Invalid arguments")
   checkException(getRestaurantsAcceptingReservations(NULL,NULL,NULL), " Checking exception with NULL arguments")
 }
 
-test.getRestaurantsNearLocation <- function() {
-  checkEquals(nrow(getRestaurantsNearLocation("Space Needle","Asian")),20,"Ensure that data is returned for city")
-  checkEquals(nrow(getRestaurantsNearLocation("Google","Mexican")),20,"Ensure that data is returned for different place")
+#TODO: Redo this test with new code
+#test.getRestaurantsNearLocation <- function() {
+#  checkEquals(nrow(getRestaurantsNearLocation("Space Needle","Asian")),20,"Ensure that data is returned for city")
+#  checkEquals(nrow(getRestaurantsNearLocation("Google","Mexican")),20,"Ensure that data is returned for different place")
 
-  checkException(getRestaurantsNearLocation("Space Needle","Invalid"),"Invalid cusine")
-  checkException(getRestaurantsNearLocation("Invalid","Mexican"),"Invalid location")
-  checkException(getRestaurantsNearLocation(NULL,NULL), " Checking exception with NULL arguments")
-}
+#  checkException(getRestaurantsNearLocation("Space Needle","Invalid"),"Invalid cusine")
+#  checkException(getRestaurantsNearLocation("Invalid","Mexican"),"Invalid location")
+#  checkException(getRestaurantsNearLocation(NULL,NULL), " Checking exception with NULL arguments")
+#}
 
 test.getRestaurantsWithDeliveryOrTakeOut <- function() {
-  checkEquals(nrow(getRestaurantsWithDeliveryOrTakeOut("San Francisco","delivery","Indian")),20,"Ensure that data is returned for city")
-  checkEquals(nrow(getRestaurantsWithDeliveryOrTakeOut("California","delivery","Mexican")),20,"Ensure that data is returned for state")
+  checkEquals(nrow(getRestaurantsWithDeliveryOrTakeOut("Redmond","delivery","Indian")),13,"Ensure that data is returned for city")
+  checkEquals(nrow(getRestaurantsWithDeliveryOrTakeOut("San Francisco","delivery","American")),20,"Ensure that data is returned for city")
 
   checkException(getRestaurantsWithDeliveryOrTakeOut("Seattle","Invalid","Invalid"),"Invalid arguments")
   checkException(getRestaurantsWithDeliveryOrTakeOut("Invalid","delivery","Italian"),"Invalid location")
@@ -148,8 +152,8 @@ test.getRestaurantsWithDeliveryOrTakeOut <- function() {
 }
 
 test.getRestaurantsWithWiFi <- function() {
-  checkEquals(nrow(getRestaurantsWithWiFi("Atlanta","Pizza")),20,"Ensure that data is returned for city")
-  checkEquals(nrow(getRestaurantsWithWiFi("Dublin","American")),20,"Ensure that data is returned for state")
+  checkEquals(nrow(getRestaurantsWithWiFi("Atlanta","Pizza")),20,"Ensure that data is returned for state")
+  checkEquals(nrow(getRestaurantsWithWiFi("Dublin","American")),14,"Ensure that data is returned for city")
 
   checkException(getRestaurantsWithWiFi("Seattle","Invalid"),"Invalid arguments")
   checkException(getRestaurantsWithWiFi("Invalid","Italian"),"Invalid location")
@@ -157,8 +161,8 @@ test.getRestaurantsWithWiFi <- function() {
 }
 
 test.getRestaurantsWithWiFi <- function() {
-  checkEquals(nrow(getRestaurantsWithWiFi("Atlanta","Pizza")),20,"Ensure that data is returned for city")
-  checkEquals(nrow(getRestaurantsWithWiFi("Dublin","American")),20,"Ensure that data is returned for state")
+  checkEquals(nrow(getRestaurantsWithWiFi("Fremont","Pizza")),3,"Ensure that data is returned for city")
+  checkEquals(nrow(getRestaurantsWithWiFi("Seattle","American")),20,"Ensure that data is returned for city")
 
   checkException(getRestaurantsWithWiFi("Seattle","Invalid"),"Invalid arguments")
   checkException(getRestaurantsWithWiFi("Invalid","Italian"),"Invalid location")
@@ -167,7 +171,7 @@ test.getRestaurantsWithWiFi <- function() {
 
 test.getWheelChairAccesibleRestaurants <- function() {
   checkEquals(nrow(getWheelChairAccesibleRestaurants("San Francisco","Asian")),20,"Ensure that data is returned for city")
-  checkEquals(nrow(getWheelChairAccesibleRestaurants("Dublin","Mexican")),20,"Ensure that data is returned for state")
+  checkEquals(nrow(getWheelChairAccesibleRestaurants("Washington","Mexican")),20,"Ensure that data is returned for state")
 
   checkException(getWheelChairAccesibleRestaurants("Seattle","Invalid"),"Invalid arguments")
   checkException(getWheelChairAccesibleRestaurants("Invalid","Italian"),"Invalid location")

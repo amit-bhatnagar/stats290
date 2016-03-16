@@ -46,12 +46,28 @@ require(R6)
 #'   \item{\code{getData()}}{Returns the restaurant data of the last issued query.}
 #'   \item{\code{queryData(city, state, cusine)}}{Returns restaurant data as a data frame based on the filter criteria specified.
 #'                InitializeYelp should return true for this method to be successful.}
+#'    \item{\code{shortlistRestaurants(city, state, cusine)}}{Returns 6 shortlisted restaurants as a data frame based on the filter criteria specified.
+#'                InitializeYelp should return true for this method to be successful. Basic information about the restaurant such as name, ph, url,
+#'                rating and review are avaialble for the user to analyze.}
+#'
 #' }
 #'
 #' @examples
 #' restaurantObj <- yelpR$new()
 #' restaurantObj$InitializeYelp()
-#' restaurantDF = restaurantObj$queryData("Bellevue","WA","Chinese")
+#' restaurantDF = restaurantObj$queryData("Stanford","CA","Indian")
+#' head(restaurantDF)$businesses.name
+#'
+#' restaurantDF = restaurantObj$queryData("San Francisco","CA","Spanish")
+#' head(restaurantDF)$businesses.name
+#'
+#' restaurantDF = restaurantObj$shortlistRestaurants("Napa Valley","CA","Italian")
+#' print(restaurantDF)
+#' print("Take your significant other, goto these places and Enjoy !")
+#'
+#' restaurantDF = restaurantObj$getRestaurantWithDeals("San Francisco","CA","Indian")
+#' head(restaurantDF)$businesses.name
+#'
 #'
 #' @export
 #' @format An \code{\link{R6Class}} generator object
@@ -66,28 +82,23 @@ yelpR <- R6Class("yelpR",
                                 NormalizeColumns = function(df)
                                 {
                                   drops <- drops <- c("businesses.location")#"businesses.gift_certificates","businesses.deals",
-                                  df = df[ , !(names(df) %in% drops)]
+                                  df <- df[ , !(names(df) %in% drops)]
                                 }
-
                                 ),
                  public = list(
                    InitializeYelp = function(consumerKey="ASkXlev4NL0jpvX2RuUMhw", consumerSecret="F1W_k2qrZRRfKcMXIltlDG1fdEY", token = "vynHw9DBQqeR4y-VEqby0eFce2LiFUM3", token_secret="uflhgBEYKMHe0KXA9POlzgEs9EM")
                    {
-                     print("Choose oauthtype")
+                     print("Choose oauthtype, ")
                      out <- tryCatch(
                        {
-                         #private$consumerKey = consumerKey
-                         #private$consumerSecret = consumerSecret
-                         #private$token = token
-                         #private$token_secret = token_secret
                          #Establish connection to yelp
-                         print("Connecting to yelp. Choose any of the auth type")
+                         print("Connecting to yelp.  If you are establishing yelp connection for first time,at the prompt to choose an auth type, select option 1. Otherwise you are good to go.")
                          myapp <<- oauth_app("YELP", key=consumerKey, secret=consumerSecret)
                          sig <<- sign_oauth1.0(myapp, token=token,token_secret=token_secret)
-                         private$consumerKey = consumerKey
-                         private$consumerSecret = consumerSecret
-                         private$token = token
-                         private$token_secret = token_secret
+                         private$consumerKey <- consumerKey
+                         private$consumerSecret <- consumerSecret
+                         private$token <- token
+                         private$token_secret <- token_secret
                          return(TRUE)
                        },
                        error=function(cond) {
@@ -119,7 +130,7 @@ yelpR <- R6Class("yelpR",
                    #If cusine is not specified, all restaurants that serve food as returned by yelp will be retrieved
                    queryData = function(city = "any", state ="any", cusine="any")
                    {
-                     dflist <- list()
+                     restaurantDF <- list()
                      out <- tryCatch(
                        {
                          #Handle numeric input
@@ -135,60 +146,120 @@ yelpR <- R6Class("yelpR",
                          if(is.null(cusine) || is.na(cusine) || is.nan(cusine))
                            cusine = "any"
 
-                         result.df = as.data.frame(matrix(ncol=26, nrow=200),dup.row.names=TRUE)
                          for(i in 0:9)
                          {
                            limit <- 20
-                           offset = i*limit
+                           offset <- i*limit
                            if(city =="any" || state == "any")
                            {
                              if(cusine != "any")
                              {
                                #Cusine specified.
                                if(city != "any") #Use city as the location if it is specified
-                                 yelpurl <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=",city,"&term=",cusine)
+                                 yelpURL <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=",city,"&term=",cusine)
                                else if(state != "any") #use state as the location if it is specified
-                                 yelpurl <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=",state,"&term=",cusine)
+                                 yelpURL <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=",state,"&term=",cusine)
                                else #Default to US as the location since neither city nor state is specified
-                                 yelpurl <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=US&term=",cusine)
+                                 yelpURL <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=US&term=",cusine)
                              }
                              else
                              {
                                #Cusine is not specified. Default to food as the search term
                                if(city != "any") #Use city as the location if it is specified
-                                 yelpurl <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=",city,"&term=food")
+                                 yelpURL <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=",city,"&term=food")
                                else if(state != "any") #use state as the location if it is specified
-                                 yelpurl <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=",state,"&term=food")
+                                 yelpURL <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=",state,"&term=food")
                                else
-                                 yelpurl <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=US&term=food")
+                                 yelpURL <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=US&term=food")
                              }
                            }
                            else
-                             yelpurl <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=",city,"%20",state,"&term=",cusine)
-                           yelpurl = URLencode(yelpurl)
-                           #Trace print(yelpurl)
-                           locationdata=GET(yelpurl, sig)
-                           locationdataContent = content(locationdata)
-                           locationdataList=jsonlite::fromJSON(toJSON(locationdataContent))
-                           head(data.frame(locationdataList))
-                           dflist[[i+1]] =  (data.frame(locationdataList,dup.row.names=FALSE))
-                           row.names(dflist[[i+1]]) = seq(offset+1,offset+limit,1)
+                           {
+                             yelpURL <- paste0("http://api.yelp.com/v2/search/?limit=",limit,"&offset=",offset,"&location=",city,"%20",state,"&term=",cusine)
+                           }
+                           yelpURL <- URLencode(yelpURL)
+                           #Trace print(yelpURL)
+                           yelpData <- GET(yelpURL, sig)
+                           yelpDataContent <- content(yelpData)
+                           yelpDataList <- jsonlite::fromJSON(toJSON(yelpDataContent))
+                           #TRACE head(data.frame(yelpDataList))
+                           restaurantDF[[i+1]] <-  (data.frame(yelpDataList,dup.row.names=FALSE))
+                           row.names(restaurantDF[[i+1]]) <- seq(offset+1,offset+limit,1)
                          }
-                         #Trace a = sapply(dflist, function(x) print(dim(x)))
+                         #Trace a = sapply(restaurantDF, function(x) print(dim(x)))
                          #Trace print(a)
-                         #Trace sapply(dflist, print(dim))
-                         dflist = lapply(dflist,private$NormalizeColumns)
-                         #Trace a = sapply(dflist, function(x) print(dim(x)))
+                         #Trace sapply(restaurantDF, print(dim))
+                         restaurantDF <- lapply(restaurantDF,private$NormalizeColumns)
+                         #Trace a = sapply(restaurantDF, function(x) print(dim(x)))
                          #Trace print(a)
-                         dflist = rbind.fill(dflist[[1]],dflist[[2]],dflist[[3]],dflist[[4]],dflist[[5]],dflist[[6]],dflist[[7]],dflist[[8]],dflist[[9]],dflist[[10]])
-                         dflist[,"businesses.aggregaterating"] = as.numeric(dflist[,"businesses.rating"])* as.numeric(dflist[,"businesses.review_count"])
+                         restaurantDF <- rbind.fill(restaurantDF[[1]],restaurantDF[[2]],restaurantDF[[3]],restaurantDF[[4]],restaurantDF[[5]],restaurantDF[[6]],restaurantDF[[7]],restaurantDF[[8]],restaurantDF[[9]],restaurantDF[[10]])
+                         restaurantDF[,"businesses.aggregaterating"] <- as.numeric(restaurantDF[,"businesses.rating"])* as.numeric(restaurantDF[,"businesses.review_count"])
 
-                         dflist_sorted = dflist[order(-dflist[,"businesses.aggregaterating"]), ]
+                         restaurantDF_sorted <- restaurantDF[order(-restaurantDF[,"businesses.aggregaterating"]), ]
 
-                         private$data = dflist_sorted
+                         private$data <- restaurantDF_sorted
                          return(private$data)
-                         #return(dflist_sorted)
-                         #return(dflist)
+                         #return(restaurantDF_sorted)
+                         #return(restaurantDF)
+                       },
+                       error=function(cond) {
+                         message(cond)
+                         # Choose a return value in case of error
+                         return(NA)
+                       },
+                       warning=function(cond) {
+                         message(cond)
+                         # Choose a return value in case of warning
+                         return(NULL)
+                       }
+                     )#tryCatch
+                     return(out)
+                   },
+                   #This method shortlists restaurants pertaining to a specific cusine in a given location
+                   #It retrieves 6 restaurants that match the specified criteria displaying necessary information such as the name, ph, url, rating
+                   # and review of the restaurant
+                   #If city or state is not specified, ressults default to United States
+                   #If cusine is not specified, all restaurants that serve food as returned by yelp will be retrieved
+                   shortlistRestaurants = function(city = "any", state ="any", cusine="any")
+                   {
+                     out <- tryCatch(
+                       {
+                         city = URLencode(city)
+                         state = URLencode(state)
+                         cusine = URLencode(cusine)
+
+                         restaurantDF = self$queryData(city, state, cusine)
+                         restaurantDF = head(restaurantDF)
+                         shortlistColumns <- c("businesses.name", "businesses.display_phone", "businesses.url", "businesses.rating","businesses.review_count")
+                         restaurantDF <- restaurantDF[shortlistColumns]
+                         private$data <- restaurantDF
+                         return(private$data)
+                       },
+                       error=function(cond) {
+                         message(cond)
+                         # Choose a return value in case of error
+                         return(NA)
+                       },
+                       warning=function(cond) {
+                         message(cond)
+                         # Choose a return value in case of warning
+                         return(NULL)
+                       }
+                     )#tryCatch
+                     return(out)
+                   },
+                   getRestaurantWithDeals = function(city = "any", state ="any", cusine="any")
+                   {
+                     out <- tryCatch(
+                       {
+                         city = URLencode(city)
+                         state = URLencode(state)
+                         cusine = URLencode(cusine)
+
+                         restaurantDF = self$queryData(city, state, cusine)
+                         restaurantDF = restaurantDF[!(is.null(restaurantDF$businesses.deals) | restaurantDF$businesses.deals == 'NULL'), ]
+                         private$data <- restaurantDF
+                         return(private$data)
                        },
                        error=function(cond) {
                          message(cond)
