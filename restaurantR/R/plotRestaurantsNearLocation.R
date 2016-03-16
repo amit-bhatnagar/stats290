@@ -4,7 +4,7 @@
 #' @import jsonlite ggmap
 #' @export
 #' @examples
-#' plotRestaurantsNearLocation("Empire State Building", "Pizza")
+#' plotRestaurantsNearLocation("Stanford University", "Pizza")
 
 
 plotRestaurantsNearLocation<-function(pointName,cuisine){
@@ -16,13 +16,15 @@ plotRestaurantsNearLocation<-function(pointName,cuisine){
         cuisine = ""
       }
 
-      pointLatLong = geocode(pointName)
+      pointLatLong = ggmap::geocode(pointName)
       pointLatLong = paste(pointLatLong[2],pointLatLong[1],sep = ",")
 
       factualAPIKey = "mKxC6I9lTWnKNTSNF12e3keaWblCXqoaZ1qROdVo"
 
-      locURL <- paste0("http://api.v3.factual.com/t/restaurants-us?geo={\"$point\":[",pointLatLong,"]}")
-      # 34.06021,-118.41828]}
+      baseURL <- "http://api.v3.factual.com/t/restaurants-us?"
+      geoFilters <- paste0("geo={\"$circle\":{\"$center\":[",pointLatLong,"],\"$meters\": 5000}}")
+
+      locURL <- paste0(baseURL,geoFilters)
 
       cuisineFilter = paste0("{\"cuisine\":{\"$includes\":\"",cuisine,"\"}}")
       allFilters=paste(cuisineFilter,sep = ",")
@@ -50,15 +52,12 @@ plotRestaurantsNearLocation<-function(pointName,cuisine){
 
           citymap = ggmap(citymap)
 
-
           citymap = citymap + ggplot2::geom_point(data=nameLatLong, ggplot2::aes(x=longitude, y=latitude),
                                                   color = 'blue',
                                                   shape = 18,
                                                   size = 8, alpha = 0.6)
 
-
           #Renaming as a work-around to a known ggplot2 issue
-
           names(nameLatLong) = c("name","lon","lat")
           citymap = citymap  +    ggplot2::geom_text(ggplot2::aes(label=name), data=nameLatLong, hjust= - 0.05,
                                                      fontface = 'bold',color = "blue",
@@ -66,9 +65,6 @@ plotRestaurantsNearLocation<-function(pointName,cuisine){
         }  else{
           warning("No results found near ", pointName)
         }
-
-
-
 
     },
     error=function(cond) {
