@@ -28,9 +28,9 @@ getRestaurantByDietType<-function(city, dietType, cuisine, full = FALSE){
       isDietTypeSupported <- any(supportedDietTypes == dietType )
 
       if(!isDietTypeSupported){
-        cat(paste(dietType,"is not a supported diet type \n"))
-        cat(paste("Diet type should be one of these:\n"))
-        cat(paste(supportedDietTypes,"\n"))
+        warning(paste(dietType,"is not a supported diet type \n"))
+        message(paste("Diet type should be one of these:\n"))
+        message(paste(supportedDietTypes,"\n"))
 
         return(FALSE)
       }
